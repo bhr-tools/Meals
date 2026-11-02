@@ -1,5 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <rect width="512" height="512" rx="128" fill="#191724"/>
-  <circle cx="256" cy="256" r="136" fill="none" stroke="#31748f" stroke-width="40"/>
-  <circle cx="256" cy="256" r="56" fill="none" stroke="#31748f" stroke-width="40"/>
+  <rect x="120" y="148" width="272" height="252" rx="44" fill="none" stroke="#31748f" stroke-width="32"/>
+  <line x1="120" y1="232" x2="392" y2="232" stroke="#31748f" stroke-width="32"/>
+  <line x1="196" y1="108" x2="196" y2="172" stroke="#31748f" stroke-width="32" stroke-linecap="round"/>
+  <line x1="316" y1="108" x2="316" y2="172" stroke="#31748f" stroke-width="32" stroke-linecap="round"/>
+  <g stroke="#ebbcba" stroke-linecap="round" fill="none">
+    <circle cx="256" cy="320" r="32" stroke-width="20"/>
+    <g stroke-width="12">
+      <line x1="170" y1="284" x2="170" y2="308"/>
+      <line x1="186" y1="284" x2="186" y2="308"/>
+      <path d="M170 308 Q178 320 186 308" stroke-width="12"/>
+      <line x1="178" y1="316" x2="178" y2="356"/>
+      <line x1="342" y1="284" x2="342" y2="356"/>
+      <path d="M342 284 C358 298 358 322 342 332" />
+    </g>
+  </g>
 </svg>
