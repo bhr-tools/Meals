@@ -468,7 +468,10 @@ details.notes[open] > summary { margin-bottom: 6px; }
 
   .sidebar, .statusbar { display: none; }
   .page { padding: 0 14px 28px; }
-  .page-header { padding-top: max(14px, env(safe-area-inset-top)); padding-bottom: 10px; }
+  /* The scrolling area must not touch the top edge: iOS 26 blurs it there.
+     The status bar zone is a plain, non-scrolling strip of the body. */
+  body { padding-top: env(safe-area-inset-top); }
+  .page-header { padding-top: 14px; padding-bottom: 10px; }
   .view-title { font-size: 1.45rem; }
   .row { min-height: 50px; padding: 8px; }
   .slot-meal { width: 52px; }
