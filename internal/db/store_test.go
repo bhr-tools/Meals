@@ -431,3 +431,33 @@ func TestExtraItems(t *testing.T) {
 		t.Errorf("extra not deleted: %+v", list)
 	}
 }
+
+func TestRemovingAMealUpdatesLastPlanned(t *testing.T) {
+	s := newStore(t)
+	a := mustRecipe(t, s, "A", "apple")
+	must(t, s.SetSlotRecipe(today, "lunch", a.ID))
+	_, err := s.Validate(today)
+	must(t, err)
+	if rs, _ := s.ListRecipes(); rs[0].LastPlanned == nil || *rs[0].LastPlanned != today {
+		t.Fatalf("last planned = %v, want %s", rs[0].LastPlanned, today)
+	}
+	must(t, s.ClearSlot(today, "lunch"))
+	if rs, _ := s.ListRecipes(); rs[0].LastPlanned != nil {
+		t.Errorf("last planned after removal = %v, want nil", *rs[0].LastPlanned)
+	}
+}
+
+func TestRestoringAListedSlotKeepsItListedOnce(t *testing.T) {
+	s := newStore(t)
+	a := mustRecipe(t, s, "A", "apple")
+	must(t, s.SetSlotRecipe(today, "lunch", a.ID))
+	_, err := s.Validate(today)
+	must(t, err)
+	must(t, s.ClearSlot(today, "lunch"))
+	must(t, s.SetSlotRecipe(today, "lunch", a.ID))
+	must(t, s.SetSlotStatus(today, "lunch", StatusListed))
+	p, _ := s.Plan(today)
+	if p.Days[0].Lunch.Status != StatusListed || p.Pending != 0 {
+		t.Errorf("restored slot = %+v, pending %d", p.Days[0].Lunch, p.Pending)
+	}
+}

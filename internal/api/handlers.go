@@ -36,6 +36,7 @@ func (a *API) getPlan(w http.ResponseWriter, r *http.Request) {
 type slotRequest struct {
 	RecipeID string `json:"recipe_id"`
 	Text     string `json:"text"`
+	Status   string `json:"status"`
 }
 
 func (a *API) setSlot(w http.ResponseWriter, r *http.Request) {
@@ -45,7 +46,11 @@ func (a *API) setSlot(w http.ResponseWriter, r *http.Request) {
 	}
 	date, meal := r.PathValue("date"), r.PathValue("meal")
 	if req.RecipeID != "" {
-		a.done(w, r, a.store.SetSlotRecipe(date, meal, req.RecipeID))
+		err := a.store.SetSlotRecipe(date, meal, req.RecipeID)
+		if err == nil && req.Status != "" {
+			err = a.store.SetSlotStatus(date, meal, req.Status)
+		}
+		a.done(w, r, err)
 		return
 	}
 	a.done(w, r, a.store.SetSlotText(date, meal, req.Text))

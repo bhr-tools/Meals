@@ -122,6 +122,22 @@ func (s *Store) SetSlotRecipe(date, meal, recipeID string) error {
 	})
 }
 
+// SetSlotStatus restores the state of a recipe slot, so that undoing a removal
+// does not list the recipe twice.
+func (s *Store) SetSlotStatus(date, meal, status string) error {
+	if err := validDate(date); err != nil {
+		return err
+	}
+	if err := validMeal(meal); err != nil {
+		return err
+	}
+	if status != StatusPending && status != StatusListed && status != StatusDone {
+		return invalid("Unknown status %q", status)
+	}
+	_, err := s.db.Exec(`UPDATE slots SET status = ? WHERE date = ? AND meal = ? AND recipe_id IS NOT NULL`, status, date, meal)
+	return err
+}
+
 // SetSlotText puts a free text ("leftovers", "out") in a slot.
 func (s *Store) SetSlotText(date, meal, text string) error {
 	if err := validDate(date); err != nil {
@@ -178,7 +194,8 @@ func (s *Store) CopyDay(from, to string) error {
 }
 
 // Validate moves the pending recipes of today and later into the shopping
-// list. It returns how many slots were validated.
+// list. It returns how many slots were validated. A recipe's last planned
+// date is derived from its non-pending slots, so it follows removals.
 func (s *Store) Validate(today string) (int, error) {
 	if err := validDate(today); err != nil {
 		return 0, err
@@ -192,10 +209,7 @@ func (s *Store) Validate(today string) (int, error) {
 		}
 		count, _ := res.RowsAffected()
 		n = int(count)
-		_, err = tx.Exec(`UPDATE recipes SET last_planned =
-			(SELECT MAX(date) FROM slots WHERE recipe_id = recipes.id AND status != 'pending')
-			WHERE id IN (SELECT recipe_id FROM slots WHERE recipe_id IS NOT NULL AND status != 'pending')`)
-		return err
+		return nil
 	})
 	return n, err
 }

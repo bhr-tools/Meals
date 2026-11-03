@@ -548,3 +548,7 @@ details.notes[open] > summary { margin-bottom: 6px; }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; animation: none !important; }
 }
+
+.slot-remove { width: 28px; height: 28px; flex-shrink: 0; opacity: 0; }
+.row:hover .slot-remove, .row.cursor .slot-remove { opacity: 1; }
+@media (hover: none) { .slot-remove { opacity: 0.7; } }

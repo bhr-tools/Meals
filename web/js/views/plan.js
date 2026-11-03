@@ -23,10 +23,24 @@ export function planView(app) {
       { type: 'success', action: { label: 'View', run: () => app.go('shopping') } });
   }
 
+  /** Puts a previous slot back (or empties it), exactly as it was. */
+  async function restore(date, meal, slot) {
+    const ok = await app.run(() => {
+      if (!slot) return api.plan.clear(date, meal);
+      return slot.recipe_id
+        ? api.plan.setRecipe(date, meal, slot.recipe_id, slot.status)
+        : api.plan.setText(date, meal, slot.text);
+    });
+    if (ok) await app.refresh();
+  }
+
   async function clearSlot(key) {
     const { date, meal, slot } = slotAt(key);
     if (!slot) return;
-    if (await app.run(() => api.plan.clear(date, meal))) await app.refresh();
+    if (await app.run(() => api.plan.clear(date, meal))) {
+      await app.refresh();
+      toast('Meal removed', { action: { label: 'Undo', run: () => restore(date, meal, slot) } });
+    }
   }
 
   function copyDay(date, anchor) {
@@ -83,10 +97,14 @@ export function planView(app) {
 
     async function pick(item) {
       modal.close();
+      const before = slotAt(key).slot;
       const ok = await app.run(() => item.recipe
         ? api.plan.setRecipe(date, meal, item.recipe.id)
         : api.plan.setText(date, meal, item.text));
-      if (ok) await app.refresh();
+      if (ok) {
+        await app.refresh();
+        toast(`Added ${item.recipe ? item.recipe.title : 'note'}`, { action: { label: 'Undo', run: () => restore(date, meal, before) } });
+      }
     }
 
     input.addEventListener('input', () => { active = 0; compute(); draw(); });
@@ -144,7 +162,11 @@ export function planView(app) {
           },
           h('span', { class: 'slot-meal' }, label),
           h('span', { class: 'slot-title' }, text),
-          slot?.recipe_id ? h('span', { class: ['slot-state', slot.status], title: { pending: 'Not in the shopping list yet', listed: 'In the shopping list', done: 'Shopped' }[slot.status] }) : null);
+          slot?.recipe_id ? h('span', { class: ['slot-state', slot.status], title: { pending: 'Not in the shopping list yet', listed: 'In the shopping list', done: 'Shopped' }[slot.status] }) : null,
+          slot ? h('button', {
+            type: 'button', class: 'icon-button slot-remove', title: 'Remove this meal', attrs: { 'aria-label': 'Remove this meal' },
+            onclick: (e) => { e.stopPropagation(); clearSlot(key); },
+          }, icon('trash')) : null);
           rows.push({ key, el: row });
           box.append(row);
         }

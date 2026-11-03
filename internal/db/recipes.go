@@ -68,7 +68,7 @@ func (in RecipeInput) clean() (string, []cleanIngredient, error) {
 
 // ListRecipes returns every recipe, never-planned and longest-ago first.
 func (s *Store) ListRecipes() ([]Recipe, error) {
-	rows, err := s.db.Query(`SELECT id, title, notes, last_planned FROM recipes
+	rows, err := s.db.Query(`SELECT id, title, notes, (SELECT MAX(date) FROM slots WHERE recipe_id = recipes.id AND status != 'pending') AS last_planned FROM recipes
 		ORDER BY last_planned IS NOT NULL, last_planned, title COLLATE NOCASE`)
 	if err != nil {
 		return nil, err
@@ -115,7 +115,7 @@ func (s *Store) GetRecipe(id string) (Recipe, error) {
 func getRecipe(q querier, id string) (Recipe, error) {
 	r := Recipe{Ingredients: []string{}}
 	var last sql.NullString
-	err := q.QueryRow(`SELECT id, title, notes, last_planned FROM recipes WHERE id = ?`, id).
+	err := q.QueryRow(`SELECT id, title, notes, (SELECT MAX(date) FROM slots WHERE recipe_id = recipes.id AND status != 'pending') FROM recipes WHERE id = ?`, id).
 		Scan(&r.ID, &r.Title, &r.Notes, &last)
 	if err == sql.ErrNoRows {
 		return r, ErrNotFound

@@ -58,7 +58,7 @@ export const api = {
   },
   plan: {
     get: (today) => get(`/api/plan?today=${id(today)}`),
-    setRecipe: (date, meal, recipeId) => put(`/api/slots/${id(date)}/${id(meal)}`, { recipe_id: recipeId }),
+    setRecipe: (date, meal, recipeId, status) => put(`/api/slots/${id(date)}/${id(meal)}`, { recipe_id: recipeId, status }),
     setText: (date, meal, text) => put(`/api/slots/${id(date)}/${id(meal)}`, { text }),
     clear: (date, meal) => del(`/api/slots/${id(date)}/${id(meal)}`),
     copyDay: (from, to) => post('/api/plan/copy-day', { from, to }),
