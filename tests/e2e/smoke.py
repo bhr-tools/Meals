@@ -60,7 +60,13 @@ def run(p):
     plan_slot(page, 5, "chili")
     plan_slot(page, 7, "chili")
     plan_slot(page, 0, "out tonight")  # free text: type it, go down to the note entry
-    expect(page.locator(".slot-state.pending")).to_have_count(4)
+    expect(page.locator(".slot-skip")).to_have_count(4)
+    expect(page.get_by_role("button", name="Validate 4 new")).to_be_visible()
+    # "No list" keeps one recipe out of the list; Undo brings it back.
+    page.locator(".slot-skip").first.click()
+    expect(page.locator(".slot-skip")).to_have_count(3)
+    expect(page.get_by_role("button", name="Validate 3 new")).to_be_visible()
+    page.get_by_role("button", name="Undo").click()
     expect(page.get_by_role("button", name="Validate 4 new")).to_be_visible()
     page.screenshot(path=f"{OUT}/plan.png")
     go(page, "3")
@@ -69,7 +75,7 @@ def run(p):
     # Validate: the list shows each ingredient with its recipes.
     go(page, "1")
     page.get_by_role("button", name="Validate 4 new").click()
-    expect(page.locator(".slot-state.listed")).to_have_count(4)
+    expect(page.locator(".slot-skip")).to_have_count(0)
     go(page, "3")
     onion = page.locator(".item", has_text="oignon")
     expect(onion.locator(".ref")).to_have_count(2)
@@ -110,7 +116,7 @@ def run(p):
     page.get_by_role("button", name="Finish").click()
     expect(page.locator(".empty-list")).to_be_visible()
     go(page, "1")
-    expect(page.locator(".slot-state.done")).to_have_count(4)
+    expect(page.locator(".slot-skip")).to_have_count(0)
 
     # Second batch: only the new recipe reaches the list.
     plan_slot(page, 9, "bolo")
