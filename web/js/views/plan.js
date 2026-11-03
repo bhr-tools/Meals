@@ -34,6 +34,16 @@ export function planView(app) {
     if (ok) await app.refresh();
   }
 
+  /** Keeps a pending recipe out of the shopping list: it counts as already handled. */
+  async function skipList(key) {
+    const { date, meal, slot } = slotAt(key);
+    if (slot?.status !== 'pending' || !slot.recipe_id) return;
+    if (await app.run(() => api.plan.setRecipe(date, meal, slot.recipe_id, 'done'))) {
+      await app.refresh();
+      toast('Not added to the shopping list', { action: { label: 'Undo', run: () => restore(date, meal, slot) } });
+    }
+  }
+
   async function clearSlot(key) {
     const { date, meal, slot } = slotAt(key);
     if (!slot) return;
@@ -131,7 +141,7 @@ export function planView(app) {
 
   return {
     title: 'Plan',
-    hints: [[['j', 'k'], 'move'], [['Enter'], 'choose'], [['x'], 'clear'], [['c'], 'copy day'], [['v'], 'validate']],
+    hints: [[['j', 'k'], 'move'], [['Enter'], 'choose'], [['x'], 'clear'], [['s'], 'no list'], [['c'], 'copy day'], [['v'], 'validate']],
 
     actions() {
       const pending = app.state.plan?.pending || 0;
@@ -162,7 +172,10 @@ export function planView(app) {
           },
           h('span', { class: 'slot-meal' }, label),
           h('span', { class: 'slot-title' }, text),
-          slot?.recipe_id ? h('span', { class: ['slot-state', slot.status], title: { pending: 'Not in the shopping list yet', listed: 'In the shopping list', done: 'Shopped' }[slot.status] }) : null,
+          slot?.recipe_id && slot.status === 'pending' ? h('button', {
+            type: 'button', class: 'slot-skip', title: 'Keep its ingredients out of the shopping list',
+            onclick: (e) => { e.stopPropagation(); skipList(key); },
+          }, 'No list') : null,
           slot ? h('button', {
             type: 'button', class: 'icon-button slot-remove', title: 'Remove this meal', attrs: { 'aria-label': 'Remove this meal' },
             onclick: (e) => { e.stopPropagation(); clearSlot(key); },
@@ -180,6 +193,7 @@ export function planView(app) {
       if (!row) return false;
       switch (k) {
         case 'Enter': case 'e': case 'a': choose(row.key); return true;
+        case 's': skipList(row.key); return true;
         case 'x': case 'd': clearSlot(row.key); return true;
         case 'c': copyDay(slotAt(row.key).date, row.el); return true;
       }

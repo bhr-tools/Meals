@@ -397,10 +397,6 @@ select.input { cursor: pointer; }
 .slot-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .slot.empty .slot-title { color: var(--rp-muted); }
 .slot.note .slot-title { color: var(--rp-subtle); font-style: italic; }
-.slot-state { width: 10px; height: 10px; flex-shrink: 0; border-radius: 50%; }
-.slot-state.pending { border: 1.5px solid var(--rp-gold); }
-.slot-state.listed { background: var(--accent); }
-.slot-state.done { background: var(--rp-hl-high); }
 
 /* ==========================================================================
    Recipes
@@ -552,3 +548,5 @@ details.notes[open] > summary { margin-bottom: 6px; }
 .slot-remove { width: 28px; height: 28px; flex-shrink: 0; opacity: 0; }
 .row:hover .slot-remove, .row.cursor .slot-remove { opacity: 1; }
 @media (hover: none) { .slot-remove { opacity: 0.7; } }
+.slot-skip { flex-shrink: 0; padding: 2px 8px; border: 1px solid var(--rp-hl-high); border-radius: 6px; background: none; color: var(--rp-muted); font: inherit; font-size: 0.74rem; cursor: pointer; }
+.slot-skip:hover { background: var(--rp-overlay); color: var(--rp-text); }
