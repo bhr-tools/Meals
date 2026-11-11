@@ -1,0 +1,3250 @@
+{
+ "normalize": [
+  {
+   "name": "Courgettes",
+   "want": "courgette"
+  },
+  {
+   "name": "courgette",
+   "want": "courgette"
+  },
+  {
+   "name": "Œufs",
+   "want": "oeuf"
+  },
+  {
+   "name": "  Pommes   de terre ",
+   "want": "pomme de terre"
+  },
+  {
+   "name": "Crème fraîche",
+   "want": "creme fraiche"
+  },
+  {
+   "name": "ananas",
+   "want": "anana"
+  },
+  {
+   "name": "riz",
+   "want": "riz"
+  },
+  {
+   "name": "gaz",
+   "want": "gaz"
+  },
+  {
+   "name": "bus",
+   "want": "bus"
+  },
+  {
+   "name": "Jus",
+   "want": "jus"
+  },
+  {
+   "name": "Maïs",
+   "want": "mais"
+  },
+  {
+   "name": "pâtes",
+   "want": "pate"
+  },
+  {
+   "name": "épinards",
+   "want": "epinard"
+  },
+  {
+   "name": "d'oignons",
+   "want": "d oignon"
+  },
+  {
+   "name": "100g de sucre",
+   "want": "100g de sucre"
+  },
+  {
+   "name": "ÉCHALOTES",
+   "want": "echalote"
+  },
+  {
+   "name": "Straße",
+   "want": "straße"
+  },
+  {
+   "name": "noix",
+   "want": "noix"
+  },
+  {
+   "name": "",
+   "want": ""
+  },
+  {
+   "name": "   ",
+   "want": ""
+  },
+  {
+   "name": "½ citron",
+   "want": "citron"
+  },
+  {
+   "name": "Haricots verts",
+   "want": "haricot vert"
+  },
+  {
+   "name": "Pois chiches",
+   "want": "pois chiche"
+  },
+  {
+   "name": "ÀÉÎ",
+   "want": "aei"
+  },
+  {
+   "name": "Çà",
+   "want": "ca"
+  },
+  {
+   "name": "mangues",
+   "want": "mangue"
+  },
+  {
+   "name": "Tomates cerises",
+   "want": "tomate cerise"
+  },
+  {
+   "name": "Poulet rôti",
+   "want": "poulet roti"
+  },
+  {
+   "name": "Lait d'amande",
+   "want": "lait d amande"
+  },
+  {
+   "name": "Œuf",
+   "want": "oeuf"
+  },
+  {
+   "name": "Saint-Jacques",
+   "want": "saint jacque"
+  },
+  {
+   "name": "3 oignons",
+   "want": "3 oignon"
+  },
+  {
+   "name": "Pâte à tarte",
+   "want": "pate a tarte"
+  },
+  {
+   "name": "Cassis",
+   "want": "cassis"
+  },
+  {
+   "name": "Maïs doux",
+   "want": "mais doux"
+  }
+ ],
+ "classify": [
+  {
+   "name": "Courgettes",
+   "key": "produce"
+  },
+  {
+   "name": "Poulet rôti",
+   "key": "meat-fish"
+  },
+  {
+   "name": "Lait",
+   "key": "dairy"
+  },
+  {
+   "name": "Crème fraîche",
+   "key": "dairy"
+  },
+  {
+   "name": "Pâtes",
+   "key": "pantry"
+  },
+  {
+   "name": "Piles",
+   "key": ""
+  },
+  {
+   "name": "Papier toilette",
+   "key": "other"
+  },
+  {
+   "name": "Pommes de terre",
+   "key": "produce"
+  },
+  {
+   "name": "Jambon blanc",
+   "key": "meat-fish"
+  },
+  {
+   "name": "Épinards surgelés",
+   "key": "frozen"
+  },
+  {
+   "name": "Vin rouge",
+   "key": "drinks"
+  },
+  {
+   "name": "Sel",
+   "key": "spices-sauces"
+  }
+ ],
+ "dictionary": [
+  {
+   "words": [
+    "beurre",
+    "de",
+    "cacahuete"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "concentre",
+    "de",
+    "tomate"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "petit",
+    "pois",
+    "surgele"
+   ],
+   "key": "frozen"
+  },
+  {
+   "words": [
+    "huile",
+    "de",
+    "tournesol"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "piment",
+    "d",
+    "espelette"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "herbe",
+    "de",
+    "provence"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "pain",
+    "au",
+    "chocolat"
+   ],
+   "key": "bakery"
+  },
+  {
+   "words": [
+    "cuisse",
+    "de",
+    "poulet"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "lait",
+    "demi",
+    "ecreme"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "sardine",
+    "en",
+    "boite"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "coulis",
+    "de",
+    "tomate"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "cube",
+    "de",
+    "bouillon"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "blanc",
+    "de",
+    "poulet"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "flocon",
+    "d",
+    "avoine"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "pate",
+    "a",
+    "tartiner"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "puree",
+    "de",
+    "tomate"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "pomme",
+    "de",
+    "terre"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "noix",
+    "de",
+    "cajou"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "thon",
+    "en",
+    "boite"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "mais",
+    "en",
+    "boite"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "creme",
+    "de",
+    "coco"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "huile",
+    "d",
+    "olive"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "cote",
+    "de",
+    "porc"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "lait",
+    "de",
+    "coco"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "fond",
+    "de",
+    "veau"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "jus",
+    "d",
+    "orange"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "jus",
+    "de",
+    "pomme"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "pain",
+    "de",
+    "mie"
+   ],
+   "key": "bakery"
+  },
+  {
+   "words": [
+    "vinaigre",
+    "balsamique"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "liquide",
+    "vaisselle"
+   ],
+   "key": "other"
+  },
+  {
+   "words": [
+    "tomate",
+    "concassee"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "film",
+    "alimentaire"
+   ],
+   "key": "other"
+  },
+  {
+   "words": [
+    "epinard",
+    "surgele"
+   ],
+   "key": "frozen"
+  },
+  {
+   "words": [
+    "sparkling",
+    "water"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "papier",
+    "toilette"
+   ],
+   "key": "other"
+  },
+  {
+   "words": [
+    "sac",
+    "congelation"
+   ],
+   "key": "other"
+  },
+  {
+   "words": [
+    "oignon",
+    "nouveau"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "cottage",
+    "cheese"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "legume",
+    "surgele"
+   ],
+   "key": "frozen"
+  },
+  {
+   "words": [
+    "frite",
+    "surgelee"
+   ],
+   "key": "frozen"
+  },
+  {
+   "words": [
+    "pizza",
+    "surgelee"
+   ],
+   "key": "frozen"
+  },
+  {
+   "words": [
+    "sauce",
+    "piquante"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "sauce",
+    "barbecue"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "papier",
+    "cuisson"
+   ],
+   "key": "other"
+  },
+  {
+   "words": [
+    "tomate",
+    "cerise"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "romarin",
+    "frais"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "poisson",
+    "blanc"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "viande",
+    "hachee"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "creme",
+    "fraiche"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "creme",
+    "liquide"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "creme",
+    "epaisse"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "fromage",
+    "blanc"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "steak",
+    "surgele"
+   ],
+   "key": "frozen"
+  },
+  {
+   "words": [
+    "haricot",
+    "rouge"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "haricot",
+    "blanc"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "chocolat",
+    "noir"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "baking",
+    "powder"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "peanut",
+    "butter"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "canned",
+    "tomato"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "bouillon",
+    "cube"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "oignon",
+    "rouge"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "patate",
+    "douce"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "haricot",
+    "vert"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "salade",
+    "verte"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "sweet",
+    "potato"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "spring",
+    "onion"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "filet",
+    "mignon"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "fromage",
+    "rape"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "lait",
+    "vegetal"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "poisson",
+    "pane"
+   ],
+   "key": "frozen"
+  },
+  {
+   "words": [
+    "frozen",
+    "pizza"
+   ],
+   "key": "frozen"
+  },
+  {
+   "words": [
+    "tomate",
+    "pelee"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "tomato",
+    "paste"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "coconut",
+    "milk"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "sauce",
+    "tomate"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "black",
+    "pepper"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "chili",
+    "powder"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "tomato",
+    "sauce"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "garam",
+    "masala"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "eau",
+    "minerale"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "orange",
+    "juice"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "sac",
+    "poubelle"
+   ],
+   "key": "other"
+  },
+  {
+   "words": [
+    "toilet",
+    "paper"
+   ],
+   "key": "other"
+  },
+  {
+   "words": [
+    "citron",
+    "vert"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "bell",
+    "pepper"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "pain",
+    "burger"
+   ],
+   "key": "bakery"
+  },
+  {
+   "words": [
+    "boeuf",
+    "hache"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "steak",
+    "hache"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "ground",
+    "beef"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "riz",
+    "basmati"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "pois",
+    "chiche"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "haricot",
+    "sec"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "sucre",
+    "glace"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "kidney",
+    "bean"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "poivre",
+    "noir"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "sauce",
+    "pesto"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "chili",
+    "flake"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "curry",
+    "paste"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "eau",
+    "gazeuse"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "essuie",
+    "tout"
+   ],
+   "key": "other"
+  },
+  {
+   "words": [
+    "paper",
+    "towel"
+   ],
+   "key": "other"
+  },
+  {
+   "words": [
+    "chou",
+    "fleur"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "chou",
+    "rouge"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "petit",
+    "pois"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "thym",
+    "frais"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "green",
+    "bean"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "burger",
+    "bun"
+   ],
+   "key": "bakery"
+  },
+  {
+   "words": [
+    "sour",
+    "cream"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "raisin",
+    "sec"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "sauce",
+    "soja"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "stock",
+    "cube"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "soft",
+    "drink"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "papier",
+    "alu"
+   ],
+   "key": "other"
+  },
+  {
+   "words": [
+    "chou",
+    "kale"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "red",
+    "onion"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "pain",
+    "pita"
+   ],
+   "key": "bakery"
+  },
+  {
+   "words": [
+    "ice",
+    "cream"
+   ],
+   "key": "frozen"
+  },
+  {
+   "words": [
+    "olive",
+    "oil"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "sauce",
+    "bbq"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "soy",
+    "sauce"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "hot",
+    "sauce"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "vin",
+    "rouge"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "vin",
+    "blanc"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "trash",
+    "bag"
+   ],
+   "key": "other"
+  },
+  {
+   "words": [
+    "dish",
+    "soap"
+   ],
+   "key": "other"
+  },
+  {
+   "words": [
+    "nuoc",
+    "mam"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "bay",
+    "leaf"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "the",
+    "vert"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "tagliatelle"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "coquillette"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "vinaigrette"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "champignon"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "citrouille"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "ciboulette"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "strawberry"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "mozzarella"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "mascarpone"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "vermicelle"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "breadcrumb"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "mayonnaise"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "mayonnaise"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "dentifrice"
+   ],
+   "key": "other"
+  },
+  {
+   "words": [
+    "toothpaste"
+   ],
+   "key": "other"
+  },
+  {
+   "words": [
+    "courgette"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "concombre"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "aubergine"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "betterave"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "butternut"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "framboise"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "gingembre"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "coriandre"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "asparagus"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "raspberry"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "blueberry"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "pineapple"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "croissant"
+   ],
+   "key": "bakery"
+  },
+  {
+   "words": [
+    "saucisson"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "chipolata"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "cabillaud"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "maquereau"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "camembert"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "margarine"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "spaghetti"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "chapelure"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "confiture"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "cacahuete"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "cornichon"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "spaghetti"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "chocolate"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "cardamome"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "champagne"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "shampoing"
+   ],
+   "key": "other"
+  },
+  {
+   "words": [
+    "detergent"
+   ],
+   "key": "other"
+  },
+  {
+   "words": [
+    "echalote"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "roquette"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "myrtille"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "pasteque"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "mushroom"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "cucumber"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "eggplant"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "broccoli"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "cilantro"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "zucchini"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "scallion"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "baguette"
+   ],
+   "key": "bakery"
+  },
+  {
+   "words": [
+    "tortilla"
+   ],
+   "key": "bakery"
+  },
+  {
+   "words": [
+    "saucisse"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "crevette"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "escalope"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "emmental"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "parmesan"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "raclette"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "macaroni"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "couscous"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "boulgour"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "lentille"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "chocolat"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "noisette"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "conserve"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "vinaigre"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "hazelnut"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "chickpea"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "couscous"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "cannelle"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "estragon"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "bouillon"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "moutarde"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "sriracha"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "cinnamon"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "limonade"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "infusion"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "lemonade"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "carotte"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "poireau"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "epinard"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "poivron"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "brocoli"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "fenouil"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "asperge"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "potiron"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "abricot"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "basilic"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "cresson"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "shallot"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "lettuce"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "spinach"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "cabbage"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "pumpkin"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "avocado"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "apricot"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "parsley"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "arugula"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "brioche"
+   ],
+   "key": "bakery"
+  },
+  {
+   "words": [
+    "chorizo"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "merguez"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "sardine"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "calamar"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "poisson"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "chicken"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "sausage"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "yogourt"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "fromage"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "gruyere"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "ricotta"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "cheddar"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "surgele"
+   ],
+   "key": "frozen"
+  },
+  {
+   "words": [
+    "fusilli"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "lasagne"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "nouille"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "semoule"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "maizena"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "cereale"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "biscuit"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "pruneau"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "cracker"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "vinegar"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "paprika"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "curcuma"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "muscade"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "laurier"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "romarin"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "vanille"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "ketchup"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "tabasco"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "harissa"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "oregano"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "saffron"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "vanilla"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "mustard"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "boisson"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "sopalin"
+   ],
+   "key": "other"
+  },
+  {
+   "words": [
+    "lessive"
+   ],
+   "key": "other"
+  },
+  {
+   "words": [
+    "tomate"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "oignon"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "patate"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "salade"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "laitue"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "celeri"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "courge"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "avocat"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "citron"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "orange"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "banane"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "fraise"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "raisin"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "mangue"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "cerise"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "persil"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "menthe"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "endive"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "tomato"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "garlic"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "carrot"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "potato"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "pepper"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "radish"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "turnip"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "celery"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "fennel"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "squash"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "cherry"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "ginger"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "poulet"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "agneau"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "canard"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "lardon"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "jambon"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "rosbif"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "saumon"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "truite"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "surimi"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "viande"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "turkey"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "salmon"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "shrimp"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "mussel"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "beurre"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "yaourt"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "chevre"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "butter"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "yogurt"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "cheese"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "nugget"
+   ],
+   "key": "frozen"
+  },
+  {
+   "words": [
+    "frozen"
+   ],
+   "key": "frozen"
+  },
+  {
+   "words": [
+    "sorbet"
+   ],
+   "key": "frozen"
+  },
+  {
+   "words": [
+    "glacon"
+   ],
+   "key": "frozen"
+  },
+  {
+   "words": [
+    "quinoa"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "farine"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "levure"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "fecule"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "avoine"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "muesli"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "amande"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "noodle"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "cereal"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "cookie"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "peanut"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "almond"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "walnut"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "cashew"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "raisin"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "lentil"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "quinoa"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "bulgur"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "poivre"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "piment"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "origan"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "safran"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "tahini"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "nutmeg"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "tisane"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "coffee"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "eponge"
+   ],
+   "key": "other"
+  },
+  {
+   "words": [
+    "sponge"
+   ],
+   "key": "other"
+  },
+  {
+   "words": [
+    "mache"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "radis"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "navet"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "pomme"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "poire"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "anana"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "peche"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "melon"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "aneth"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "onion"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "lemon"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "apple"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "grape"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "mango"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "peach"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "basil"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "chive"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "bagel"
+   ],
+   "key": "bakery"
+  },
+  {
+   "words": [
+    "bread"
+   ],
+   "key": "bakery"
+  },
+  {
+   "words": [
+    "toast"
+   ],
+   "key": "bakery"
+  },
+  {
+   "words": [
+    "dinde"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "boeuf"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "steak"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "bacon"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "colin"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "gamba"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "moule"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "mince"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "trout"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "prawn"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "steak"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "creme"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "comte"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "cream"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "frite"
+   ],
+   "key": "frozen"
+  },
+  {
+   "words": [
+    "glace"
+   ],
+   "key": "frozen"
+  },
+  {
+   "words": [
+    "penne"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "sucre"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "cacao"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "datte"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "bocal"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "olive"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "capre"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "huile"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "pasta"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "flour"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "sugar"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "yeast"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "honey"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "cumin"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "curry"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "sauge"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "pesto"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "stock"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "spice"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "sauce"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "biere"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "cidre"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "sirop"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "water"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "juice"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "savon"
+   ],
+   "key": "other"
+  },
+  {
+   "words": [
+    "chou"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "kiwi"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "mais"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "leek"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "beet"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "lime"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "pear"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "mint"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "dill"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "corn"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "pain"
+   ],
+   "key": "bakery"
+  },
+  {
+   "words": [
+    "wrap"
+   ],
+   "key": "bakery"
+  },
+  {
+   "words": [
+    "naan"
+   ],
+   "key": "bakery"
+  },
+  {
+   "words": [
+    "pita"
+   ],
+   "key": "bakery"
+  },
+  {
+   "words": [
+    "roll"
+   ],
+   "key": "bakery"
+  },
+  {
+   "words": [
+    "veau"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "porc"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "thon"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "roti"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "cote"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "beef"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "pork"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "lamb"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "duck"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "tuna"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "fish"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "lait"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "feta"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "brie"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "skyr"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "oeuf"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "oeuf"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "milk"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "frie"
+   ],
+   "key": "frozen"
+  },
+  {
+   "words": [
+    "pate"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "miel"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "noix"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "rice"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "bean"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "thym"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "salt"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "herb"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "soda"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "cola"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "cafe"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "beer"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "wine"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "foil"
+   ],
+   "key": "other"
+  },
+  {
+   "words": [
+    "soap"
+   ],
+   "key": "other"
+  },
+  {
+   "words": [
+    "ail"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "pea"
+   ],
+   "key": "produce"
+  },
+  {
+   "words": [
+    "bun"
+   ],
+   "key": "bakery"
+  },
+  {
+   "words": [
+    "ham"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "cod"
+   ],
+   "key": "meat-fish"
+  },
+  {
+   "words": [
+    "egg"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "egg"
+   ],
+   "key": "dairy"
+  },
+  {
+   "words": [
+    "riz"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "oat"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "oat"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "jam"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "oil"
+   ],
+   "key": "pantry"
+  },
+  {
+   "words": [
+    "sel"
+   ],
+   "key": "spices-sauces"
+  },
+  {
+   "words": [
+    "eau"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "jus"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "vin"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "the"
+   ],
+   "key": "drinks"
+  },
+  {
+   "words": [
+    "tea"
+   ],
+   "key": "drinks"
+  }
+ ]
+}
