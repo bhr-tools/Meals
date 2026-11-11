@@ -26,6 +26,7 @@ type Recipe struct {
 
 // RecipeInput is what the user submits when creating or editing a recipe.
 type RecipeInput struct {
+	ID          string   `json:"id"` // optional on creation: a UUID chosen by the client
 	Title       string   `json:"title"`
 	Ingredients []string `json:"ingredients"`
 	Notes       string   `json:"notes"`
@@ -158,7 +159,10 @@ func (s *Store) CreateRecipe(in RecipeInput) (Recipe, error) {
 	if err != nil {
 		return Recipe{}, err
 	}
-	id := newID()
+	id, err := clientID(in.ID)
+	if err != nil {
+		return Recipe{}, err
+	}
 	err = s.tx(func(tx *sql.Tx) error {
 		if _, err := tx.Exec(`INSERT INTO recipes (id, title, notes) VALUES (?, ?, ?)`, id, title, in.Notes); err != nil {
 			return err

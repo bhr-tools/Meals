@@ -245,7 +245,7 @@ func TestTicksSurviveAndResetOnDone(t *testing.T) {
 		t.Errorf("after second batch: total = %d remaining = %d", list.Total, list.Remaining)
 	}
 
-	must(t, s.AddExtra("Toilet paper"))
+	must(t, s.AddExtra("", "Toilet paper"))
 	must(t, s.FinishShopping())
 	list, _ = s.Shopping()
 	if list.Total != 0 {
@@ -267,7 +267,7 @@ func TestAislesGroupingAndOverrides(t *testing.T) {
 	must(t, s.SetSlotRecipe(today, "lunch", r.ID))
 	_, err := s.Validate(today)
 	must(t, err)
-	must(t, s.AddExtra("lait"))
+	must(t, s.AddExtra("", "lait"))
 
 	groupOf := func(key string) string {
 		list, err := s.Shopping()
@@ -301,7 +301,7 @@ func TestAislesGroupingAndOverrides(t *testing.T) {
 	}
 
 	// A user choice beats the dictionary and is remembered.
-	custom, err := s.CreateAisle("Butcher")
+	custom, err := s.CreateAisle("", "Butcher")
 	must(t, err)
 	must(t, s.SetIngredientAisle("Poulet", custom.ID))
 	if got := groupOf("poulet"); got != "Butcher" {
@@ -420,8 +420,8 @@ func TestDeletingARecipeClearsItsSlots(t *testing.T) {
 
 func TestExtraItems(t *testing.T) {
 	s := newStore(t)
-	must(t, s.AddExtra("Toilet paper"))
-	must(t, s.AddExtra("toilet papers")) // same item
+	must(t, s.AddExtra("", "Toilet paper"))
+	must(t, s.AddExtra("", "toilet papers")) // same item
 	list, _ := s.Shopping()
 	if list.Total != 1 || list.Groups[0].Items[0].ExtraID == "" {
 		t.Fatalf("list = %+v", list)
@@ -459,5 +459,24 @@ func TestRestoringAListedSlotKeepsItListedOnce(t *testing.T) {
 	p, _ := s.Plan(today)
 	if p.Days[0].Lunch.Status != StatusListed || p.Pending != 0 {
 		t.Errorf("restored slot = %+v, pending %d", p.Days[0].Lunch, p.Pending)
+	}
+}
+
+func TestClientIDs(t *testing.T) {
+	s := newStore(t)
+	id := "6f1c1b3e-5a0e-4a53-9d0e-0b6f7a8f2c11"
+	r, err := s.CreateRecipe(RecipeInput{ID: id, Title: "Soup"})
+	if err != nil || r.ID != id {
+		t.Fatalf("CreateRecipe with an id: %+v, %v", r, err)
+	}
+	if _, err := s.CreateRecipe(RecipeInput{ID: "x", Title: "Soup"}); !isInvalid(err) {
+		t.Fatalf("bad id: err = %v, want a validation error", err)
+	}
+	if a, err := s.CreateAisle("", "Butcher"); err != nil || a.ID == "" {
+		t.Fatalf("CreateAisle without id: %+v, %v", a, err)
+	}
+	must(t, s.AddExtra("", "Piles"))
+	if err := s.AddExtra("x", "Piles 2"); !isInvalid(err) {
+		t.Fatalf("bad extra id: err = %v", err)
 	}
 }

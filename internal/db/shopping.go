@@ -171,8 +171,9 @@ func (s *Store) SetChecked(name string, checked bool) error {
 	return err
 }
 
-// AddExtra adds a hand-written item to the list.
-func (s *Store) AddExtra(name string) error {
+// AddExtra adds a hand-written item to the list. id is optional: a UUID
+// chosen by the client.
+func (s *Store) AddExtra(id, name string) error {
 	name = strings.Join(strings.Fields(name), " ")
 	norm := aisle.Normalize(name)
 	if norm == "" {
@@ -181,7 +182,11 @@ func (s *Store) AddExtra(name string) error {
 	if len([]rune(name)) > maxIngredient {
 		return invalid("The name is too long (max %d characters)", maxIngredient)
 	}
-	_, err := s.db.Exec(`INSERT OR IGNORE INTO shopping_extra (id, name, norm) VALUES (?, ?, ?)`, newID(), name, norm)
+	id, err := clientID(id)
+	if err != nil {
+		return err
+	}
+	_, err = s.db.Exec(`INSERT OR IGNORE INTO shopping_extra (id, name, norm) VALUES (?, ?, ?)`, id, name, norm)
 	return err
 }
 

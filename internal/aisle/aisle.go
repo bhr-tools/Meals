@@ -12,12 +12,23 @@ import (
 //go:embed dictionary.txt
 var rawDictionary string
 
-type entry struct {
-	words []string
-	key   string
+// Entry is a dictionary keyword (normalized words) and its aisle key.
+type Entry struct {
+	Words []string
+	Key   string
 }
 
 var entries = parseDictionary(rawDictionary)
+
+// Entries returns the dictionary, most specific keywords first: the order in
+// which Classify tries them.
+func Entries() []Entry {
+	out := make([]Entry, len(entries))
+	for i, e := range entries {
+		out[i] = Entry{Words: append([]string(nil), e.Words...), Key: e.Key}
+	}
+	return out
+}
 
 var accents = strings.NewReplacer(
 	"é", "e", "è", "e", "ê", "e", "ë", "e",
@@ -60,8 +71,8 @@ func singular(w string) string {
 func Classify(norm string) (string, bool) {
 	words := strings.Fields(norm)
 	for _, e := range entries {
-		if containsRun(words, e.words) {
-			return e.key, true
+		if containsRun(words, e.Words) {
+			return e.Key, true
 		}
 	}
 	return "", false
@@ -85,8 +96,8 @@ func containsRun(words, run []string) bool {
 
 // parseDictionary reads "key: keyword, keyword, ..." lines ('#' starts a
 // comment) and orders the keywords from most to least specific.
-func parseDictionary(raw string) []entry {
-	var out []entry
+func parseDictionary(raw string) []Entry {
+	var out []Entry
 	for _, line := range strings.Split(raw, "\n") {
 		if i := strings.Index(line, "#"); i >= 0 {
 			line = line[:i]
@@ -97,15 +108,15 @@ func parseDictionary(raw string) []entry {
 		}
 		for _, kw := range strings.Split(list, ",") {
 			if norm := Normalize(kw); norm != "" {
-				out = append(out, entry{words: strings.Fields(norm), key: strings.TrimSpace(key)})
+				out = append(out, Entry{Words: strings.Fields(norm), Key: strings.TrimSpace(key)})
 			}
 		}
 	}
 	sort.SliceStable(out, func(i, j int) bool {
-		if len(out[i].words) != len(out[j].words) {
-			return len(out[i].words) > len(out[j].words)
+		if len(out[i].Words) != len(out[j].Words) {
+			return len(out[i].Words) > len(out[j].Words)
 		}
-		return len(strings.Join(out[i].words, " ")) > len(strings.Join(out[j].words, " "))
+		return len(strings.Join(out[i].Words, " ")) > len(strings.Join(out[j].Words, " "))
 	})
 	return out
 }

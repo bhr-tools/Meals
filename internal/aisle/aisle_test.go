@@ -1,6 +1,9 @@
 package aisle
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func TestNormalize(t *testing.T) {
 	cases := map[string]string{
@@ -48,5 +51,30 @@ func TestClassify(t *testing.T) {
 		if !ok || got != want {
 			t.Errorf("Classify(%q) = %q (%v), want %q", in, got, ok, want)
 		}
+	}
+}
+
+// Entries must list the keywords in the order Classify tries them: the web
+// app classifies with that list.
+func TestEntriesFollowClassifyOrder(t *testing.T) {
+	entries := Entries()
+	if len(entries) == 0 {
+		t.Fatal("empty dictionary")
+	}
+	for _, e := range entries {
+		want := ""
+		for _, c := range entries {
+			if containsRun(e.Words, c.Words) {
+				want = c.Key
+				break
+			}
+		}
+		if got, ok := Classify(strings.Join(e.Words, " ")); !ok || got != want {
+			t.Errorf("Classify(%q) = %q, %v; first matching entry says %q", e.Words, got, ok, want)
+		}
+	}
+	entries[0].Words[0] = "changed"
+	if Entries()[0].Words[0] == "changed" {
+		t.Error("Entries returns the internal slice")
 	}
 }

@@ -61,6 +61,9 @@ func (a *API) Handler() http.Handler {
 	auth("PUT /api/shopping/aisle", a.setIngredientAisle)
 	auth("POST /api/shopping/done", a.finishShopping)
 
+	auth("GET /api/sync", a.getSync)
+	auth("POST /api/sync", a.postSync)
+
 	auth("GET /api/aisles", a.listAisles)
 	auth("POST /api/aisles", a.createAisle)
 	auth("PATCH /api/aisles/{id}", a.renameAisle)

@@ -48,13 +48,23 @@ func cleanAisleName(name string) (string, error) {
 	return name, nil
 }
 
-// CreateAisle adds an aisle at the end of the list, just before Other.
-func (s *Store) CreateAisle(name string) (Aisle, error) {
+// HasAisle reports whether an aisle exists.
+func (s *Store) HasAisle(id string) (bool, error) {
+	return exists(s.db, `SELECT 1 FROM aisles WHERE id = ?`, id)
+}
+
+// CreateAisle adds an aisle at the end of the list, just before Other. id is
+// optional: a UUID chosen by the client.
+func (s *Store) CreateAisle(id, name string) (Aisle, error) {
 	name, err := cleanAisleName(name)
 	if err != nil {
 		return Aisle{}, err
 	}
-	a := Aisle{ID: newID(), Name: name}
+	id, err = clientID(id)
+	if err != nil {
+		return Aisle{}, err
+	}
+	a := Aisle{ID: id, Name: name}
 	err = s.tx(func(tx *sql.Tx) error {
 		var otherPos int
 		if err := tx.QueryRow(`SELECT position FROM aisles WHERE key = ?`, OtherAisleKey).Scan(&otherPos); err != nil {

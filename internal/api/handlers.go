@@ -156,7 +156,7 @@ func (a *API) addExtra(w http.ResponseWriter, r *http.Request) {
 	if !decode(w, r, &req) {
 		return
 	}
-	a.done(w, r, a.store.AddExtra(req.Name))
+	a.done(w, r, a.store.AddExtra("", req.Name))
 }
 
 func (a *API) deleteExtra(w http.ResponseWriter, r *http.Request) {
@@ -198,7 +198,7 @@ func (a *API) createAisle(w http.ResponseWriter, r *http.Request) {
 	if !decode(w, r, &req) {
 		return
 	}
-	aisle, err := a.store.CreateAisle(req.Name)
+	aisle, err := a.store.CreateAisle("", req.Name)
 	if err != nil {
 		fail(w, r, err)
 		return
