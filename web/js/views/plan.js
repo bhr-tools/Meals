@@ -133,7 +133,9 @@ export function planView(app) {
 
     const modal = openModal({
       className: 'picker',
-      body: [h('div', { class: 'picker-search' }, icon('search'), input), list],
+      body: [h('div', { class: 'picker-search' },
+        h('label', { class: 'picker-field' }, icon('search'), input),
+        h('button', { type: 'button', class: 'picker-cancel', onclick: () => modal.close() }, 'Cancel')), list],
     });
     compute();
     draw();

@@ -181,7 +181,8 @@ class App {
       nav.append(h('button', { type: 'button', class: 'nav-item', dataset: { tab: tab.id }, onclick: () => this.go(tab.id) },
         icon(tab.icon), h('span', { class: 'nav-label' }, tab.label), h('span', { class: 'nav-count' })));
       tabbar.append(h('button', { type: 'button', class: 'tab', dataset: { tab: tab.id }, onclick: () => this.go(tab.id) },
-        tab.label, h('span', { class: 'badge' })));
+        h('span', { class: 'tab-icon' }, icon(tab.icon), h('span', { class: 'badge' })),
+        h('span', { class: 'tab-label' }, tab.label)));
     }
   }
 
