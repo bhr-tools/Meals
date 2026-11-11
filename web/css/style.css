@@ -250,6 +250,9 @@ select.input { cursor: pointer; }
 .status-mode.insert { background: var(--rp-love); color: var(--on-accent); }
 .status-mode.visual { background: var(--rp-iris); color: var(--on-accent); }
 .status-mode.sidebar { color: var(--rp-foam); }
+.status-sync { color: var(--rp-subtle); }
+.status-sync.offline { color: var(--rp-gold); }
+.status-sync.error, .status-sync.auth { color: var(--rp-love); }
 .status-position { font-family: "JetBrains Mono", ui-monospace, monospace; }
 .status-help { color: inherit; font-size: inherit; }
 
@@ -463,6 +466,9 @@ details.notes[open] > summary { margin-bottom: 6px; }
   button, .row, .nav-item { touch-action: manipulation; }
 
   .sidebar, .statusbar { display: none; }
+  /* On a phone the bar only shows the sync indicator, and only when it has something to say. */
+  .statusbar:has(.status-sync:not([hidden])) { display: flex; justify-content: center; height: auto; min-height: 28px; }
+  .status-mode, .status-position, .status-hints { display: none; }
   .page { padding: 0 14px 28px; }
   /* Sticky with a background: iOS 26 extends its colour under the status
      bar instead of blurring the top of the page. */

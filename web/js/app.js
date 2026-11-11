@@ -1,9 +1,9 @@
 // Meals: application shell. It owns the data, the three views (Plan, Recipes,
 // Shopping), the cursor shared by their rows and the Vim-style keys.
 
-import { api, ApiError, onUnauthorized } from './api.js';
+import { api, ApiError, engine, onUnauthorized } from './api.js';
 import { h, icon, clear, isTextInput } from './dom.js';
-import { openModal, openMenu, closeAllModals, topModal, toast, escapeTopLayer, isPopoverOpen } from './ui/overlay.js';
+import { openModal, openMenu, closeAllModals, topModal, toast, escapeTopLayer, isPopoverOpen, confirmDialog } from './ui/overlay.js';
 import { todayISO } from './dates.js';
 import { planView } from './views/plan.js';
 import { recipesView } from './views/recipes.js';
@@ -52,19 +52,73 @@ class App {
     window.addEventListener('focus', () => this.tick());
     setInterval(() => this.tick(), 60_000);
     document.addEventListener('focusin', () => this.renderStatus());
-    document.addEventListener('focusout', () => setTimeout(() => this.renderStatus(), 0));
+    document.addEventListener('focusout', () => setTimeout(() => { this.renderStatus(); this.refreshIfStale(); }, 0));
+    await this.startEngine();
 
     let status;
     try {
       status = await api.auth.status();
     } catch (err) {
-      return this.showFatal(err);
+      // No network: start from the data kept on this device, if any.
+      if (!engine.ready) return this.showFatal(err);
+      status = { no_auth: false, has_password: true, authenticated: true, offline: true };
     }
     this.state.auth = status;
     $('auth-menu').hidden = status.no_auth;
     if (!status.no_auth && !status.has_password) return this.showSetup();
     if (!status.authenticated) return this.showLogin();
-    await this.afterLogin();
+    await this.afterLogin({ sync: !status.offline });
+  }
+
+  /** Loads the data kept on this device and starts the background sync (once). */
+  async startEngine() {
+    if (this.engineStarted) return;
+    this.engineStarted = true;
+    await engine.init();
+    engine.onStatus = (s) => this.renderSync(s);
+    engine.onRejected = (messages) => toast(`Not saved: ${messages[0]}${messages.length > 1 ? ` (+${messages.length - 1})` : ''}`, { type: 'error' });
+    engine.onAuthRequired = () => this.showLogin();
+    engine.onChange = () => this.onRemoteChange();
+    engine.start();
+    this.registerServiceWorker();
+  }
+
+  /** The local data changed under us (server answer, other tab). */
+  async onRemoteChange() {
+    if (!this.state.auth.authenticated) return;
+    // Redrawing would wipe a field being typed in: wait until the user is done.
+    if (topModal() || isTextInput(document.activeElement)) {
+      this.stale = true;
+      return;
+    }
+    this.stale = false;
+    await this.refresh();
+  }
+
+  refreshIfStale() {
+    if (this.stale && this.state.auth.authenticated && !topModal() && !isTextInput(document.activeElement)) this.onRemoteChange();
+  }
+
+  /** Status bar: offline state and changes waiting for the server. */
+  renderSync({ status, pending }) {
+    const el = $('status-sync');
+    const text = {
+      offline: pending ? `offline · ${pending} pending` : 'offline',
+      auth: 'sign in to sync',
+      error: `sync error · ${pending} pending`,
+    }[status] ?? (pending ? `${pending} pending` : '');
+    el.textContent = text;
+    el.hidden = !text;
+    el.className = `status-sync ${status}`;
+  }
+
+  registerServiceWorker() {
+    if (!('serviceWorker' in navigator)) return;
+    const hadController = Boolean(navigator.serviceWorker.controller);
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (hadController) toast('Meals was updated', { action: { label: 'Reload', run: () => location.reload() } });
+    });
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
   }
 
   /** Reloads when the day changes (the window slides) or the tab regains focus. */
@@ -371,8 +425,13 @@ class App {
     });
   }
 
-  async afterLogin() {
+  async afterLogin({ sync = true } = {}) {
     this.state.auth = { ...this.state.auth, has_password: true, authenticated: true };
+    if (sync) await engine.sync();
+    if (!engine.ready) {
+      this.showFatal(new ApiError('Cannot load your data. Check your connection.', 0));
+      return;
+    }
     await this.refresh();
   }
 
@@ -397,7 +456,14 @@ class App {
   }
 
   async lock() {
+    if (engine.pending) await engine.sync();
+    if (engine.pending) {
+      const ok = await confirmDialog('Unsynced changes',
+        `${engine.pending} change(s) have not reached the server yet and will be lost. Lock anyway?`, { okText: 'Lock' });
+      if (!ok) return;
+    }
     await this.run(() => api.auth.logout());
+    await engine.reset();
     this.showLogin();
   }
 

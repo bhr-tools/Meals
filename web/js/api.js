@@ -1,12 +1,20 @@
 // HTTP client for the Meals API. Every call returns the decoded JSON or
 // throws an ApiError whose message can be shown to the user.
 
-export class ApiError extends Error {
-  constructor(message, status) {
-    super(message);
-    this.status = status;
-  }
-}
+import { ApiError } from './errors.js';
+import { SyncEngine, newId } from './sync/engine.js';
+import { EMPTY, fromSnapshot, plan, listRecipes, shopping, listAisles } from './sync/state.js';
+import { reduce } from './sync/reduce.js';
+
+export { ApiError };
+
+/** Local data, kept in sync with the server (see sync/engine.js). */
+export const engine = new SyncEngine({ dbName: 'meals', empty: EMPTY, fromSnapshot, reduce });
+
+// Reads answer from the local state; errors become rejected promises, as
+// with the network.
+const local = (fn) => Promise.resolve().then(() => fn(engine.state));
+const change = (type, args) => engine.mutate(type, args);
 
 let unauthorizedHandler = () => {};
 
@@ -42,10 +50,6 @@ async function request(method, path, body) {
 
 const get = (path) => request('GET', path);
 const post = (path, body = {}) => request('POST', path, body);
-const put = (path, body) => request('PUT', path, body);
-const patch = (path, body) => request('PATCH', path, body);
-const del = (path) => request('DELETE', path);
-const id = encodeURIComponent;
 
 export const api = {
   auth: {
@@ -57,32 +61,32 @@ export const api = {
       post('/api/auth/change-password', { old_password: oldPassword, new_password: newPassword }),
   },
   plan: {
-    get: (today) => get(`/api/plan?today=${id(today)}`),
-    setRecipe: (date, meal, recipeId, status) => put(`/api/slots/${id(date)}/${id(meal)}`, { recipe_id: recipeId, status }),
-    setText: (date, meal, text) => put(`/api/slots/${id(date)}/${id(meal)}`, { text }),
-    clear: (date, meal) => del(`/api/slots/${id(date)}/${id(meal)}`),
-    copyDay: (from, to) => post('/api/plan/copy-day', { from, to }),
-    validate: (today) => post('/api/plan/validate', { today }),
+    get: (today) => local((s) => plan(s, today)),
+    setRecipe: (date, meal, recipeId, status) => change('slot.set_recipe', { date, meal, recipe_id: recipeId, status: status || '' }),
+    setText: (date, meal, text) => change('slot.set_text', { date, meal, text }),
+    clear: (date, meal) => change('slot.clear', { date, meal }),
+    copyDay: (from, to) => change('plan.copy_day', { from, to }),
+    validate: (today) => change('plan.validate', { today }),
   },
   recipes: {
-    list: () => get('/api/recipes'),
-    create: (recipe) => post('/api/recipes', recipe),
-    update: (recipeId, recipe) => put(`/api/recipes/${id(recipeId)}`, recipe),
-    remove: (recipeId) => del(`/api/recipes/${id(recipeId)}`),
+    list: () => local((s) => listRecipes(s)),
+    create: (recipe) => change('recipe.create', { ...recipe, id: newId() }),
+    update: (recipeId, recipe) => change('recipe.update', { ...recipe, id: recipeId }),
+    remove: (recipeId) => change('recipe.delete', { id: recipeId }),
   },
   shopping: {
-    get: () => get('/api/shopping'),
-    check: (name, checked) => put('/api/shopping/checked', { name, checked }),
-    addExtra: (name) => post('/api/shopping/extra', { name }),
-    removeExtra: (extraId) => del(`/api/shopping/extra/${id(extraId)}`),
-    setAisle: (name, aisleId) => put('/api/shopping/aisle', { name, aisle_id: aisleId }),
-    done: () => post('/api/shopping/done'),
+    get: () => local((s) => shopping(s)),
+    check: (name, checked) => change('shopping.check', { name, checked }),
+    addExtra: (name) => change('shopping.add_extra', { id: newId(), name }),
+    removeExtra: (extraId) => change('shopping.remove_extra', { id: extraId }),
+    setAisle: (name, aisleId) => change('shopping.set_aisle', { name, aisle_id: aisleId }),
+    done: () => change('shopping.done', {}),
   },
   aisles: {
-    list: () => get('/api/aisles'),
-    create: (name) => post('/api/aisles', { name }),
-    rename: (aisleId, name) => patch(`/api/aisles/${id(aisleId)}`, { name }),
-    remove: (aisleId) => del(`/api/aisles/${id(aisleId)}`),
-    reorder: (ids) => put('/api/aisles/order', { ids }),
+    list: () => local((s) => listAisles(s)),
+    create: (name) => change('aisle.create', { id: newId(), name }),
+    rename: (aisleId, name) => change('aisle.rename', { id: aisleId, name }),
+    remove: (aisleId) => change('aisle.delete', { id: aisleId }),
+    reorder: (ids) => change('aisle.reorder', { ids }),
   },
 };
