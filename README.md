@@ -17,6 +17,23 @@ Aisles come from a built-in keyword dictionary (French and English,
 `internal/aisle/dictionary.txt`). They can be renamed, reordered, added and
 removed; correcting one ingredient's aisle is remembered.
 
+**Works offline**: changes are kept on the device and sent when the
+connection returns. The app starts without network (a service worker keeps its
+files) and shows all your data from a copy kept in the browser (IndexedDB);
+every change is applied on the device at once and queued, even if the app is
+closed before the network is back. The status bar shows `offline` and the
+number of changes waiting. *Lock* erases the data kept on the device.
+
+Technically, `GET /api/sync` returns the whole data (recipes, plan, shopping
+state, aisles and the aisle dictionary) with an ETag, and `POST /api/sync`
+applies a batch of changes in order, then returns the new data. Each change
+has a client-chosen UUID, remembered for 30 days in the `sync_ops` table, so a
+batch sent twice is applied once. The server stays the authority: the last
+change to reach it wins, and every snapshot it sends replaces the device's
+guess. The shopping list is computed on the device from the same data
+(`web/js/aisle.js` is a port of `internal/aisle`; `tests/fixtures/normalize.json`
+checks both). Password changes need the network.
+
 The interface is in English, Rosé Pine (dark/light, following the system),
 with Vim keys (`?` lists them) and a bottom tab bar on phones.
 
@@ -46,5 +63,6 @@ Data lives in `/var/lib/meals-<instance>/meals.db`.
 
 ```sh
 go test ./...
+node --test tests/js/*.test.mjs   # offline state, reducer and sync engine
 tests/e2e/run.sh   # Playwright from nixpkgs, screenshots in tests/e2e/out
 ```
