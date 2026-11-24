@@ -1,9 +1,8 @@
 // Recipes: a title, ingredients (names only) and free notes.
 
-import { h, icon, autoGrow } from '../dom.js';
-import { api } from '../api.js';
-import { openModal, confirmDialog, toast } from '../ui/overlay.js';
+import { h, icon } from '../dom.js';
 import { sinceLabel } from '../dates.js';
+import { showRecipe, editRecipe } from '../recipe.js';
 
 const fold = (s) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 
@@ -24,7 +23,7 @@ export function recipesView(app) {
     const shown = matches();
     const rows = shown.map((r) => ({
       key: r.id,
-      el: h('div', { class: 'row', onclick: () => { app.select(r.id); edit(r); } },
+      el: h('div', { class: 'row', onclick: () => { app.select(r.id); showRecipe(app, r); } },
         h('div', { class: 'row-main' },
           h('div', { class: 'row-title' }, r.title),
           h('div', { class: 'row-sub' }, r.ingredients.length ? r.ingredients.join(', ') : 'No ingredients')),
@@ -36,75 +35,12 @@ export function recipesView(app) {
     return rows;
   }
 
-  /** Create (recipe = null) or edit a recipe. */
-  function edit(recipe) {
-    const title = h('input', { type: 'text', class: 'input', maxLength: 200, placeholder: 'Recipe name', value: recipe?.title || '' });
-    const ingredients = h('textarea', {
-      class: 'input field-area', rows: 8, spellcheck: false,
-      placeholder: 'One ingredient per line\nzucchini\ncream\nonion',
-      value: recipe ? recipe.ingredients.join('\n') : '',
-    });
-    const notes = h('textarea', {
-      class: 'input field-area', rows: 5,
-      placeholder: 'Steps, a link, a cooking tip… never added to the shopping list.',
-      value: recipe?.notes || '',
-    });
-    const grow = (t) => t.addEventListener('input', () => autoGrow(t, 150));
-
-    let modal;
-    async function save() {
-      if (!title.value.trim()) { title.focus(); return; }
-      const payload = { title: title.value, ingredients: ingredients.value.split('\n'), notes: notes.value };
-      const saved = await app.run(() => (recipe ? api.recipes.update(recipe.id, payload) : api.recipes.create(payload)));
-      if (!saved) return;
-      modal.close();
-      await app.refresh();
-      app.select(saved.id);
-      toast(recipe ? 'Recipe saved' : 'Recipe added', { type: 'success' });
-    }
-    async function remove() {
-      const ok = await confirmDialog('Delete recipe', `“${recipe.title}” will also be removed from the plan.`, { okText: 'Delete' });
-      if (!ok) return;
-      if (await app.run(() => api.recipes.remove(recipe.id))) {
-        modal.close();
-        await app.refresh();
-      }
-    }
-
-    const field = (label, control) => h('label', { class: 'field' }, h('span', { class: 'field-label' }, label), control);
-    const submitOnCtrlEnter = (e) => {
-      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); save(); }
-    };
-    title.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { e.preventDefault(); ingredients.focus(); }
-    });
-    for (const t of [ingredients, notes]) t.addEventListener('keydown', submitOnCtrlEnter);
-    grow(ingredients);
-    grow(notes);
-
-    modal = openModal({
-      title: recipe ? 'Edit recipe' : 'New recipe',
-      className: 'recipe',
-      body: [
-        field('Name', title),
-        field('Ingredients', ingredients),
-        h('details', { class: 'notes', open: !!recipe?.notes }, h('summary', {}, 'Notes'), notes),
-      ],
-      footer: [
-        recipe ? h('button', { type: 'button', class: 'button danger push-left', onclick: remove }, 'Delete') : null,
-        h('button', { type: 'button', class: 'button', onclick: () => modal.close() }, 'Cancel'),
-        h('button', { type: 'button', class: 'button primary', onclick: save }, 'Save'),
-      ],
-    });
-    requestAnimationFrame(() => { autoGrow(ingredients, 150); autoGrow(notes, 150); });
-  }
-
   return {
     title: 'Recipes',
-    hints: [[['j', 'k'], 'move'], [['a'], 'new'], [['Enter'], 'edit'], [['/'], 'search']],
+    hints: [[['j', 'k'], 'move'], [['a'], 'new'], [['Enter'], 'open'], [['e'], 'edit'], [['/'], 'search']],
 
     actions() {
-      return [h('button', { type: 'button', class: 'button primary', onclick: () => edit(null) }, icon('plus'), 'New recipe')];
+      return [h('button', { type: 'button', class: 'button primary', onclick: () => editRecipe(app, null) }, icon('plus'), 'New recipe')];
     },
 
     render() {
@@ -126,11 +62,11 @@ export function recipesView(app) {
 
     key(k, row) {
       switch (k) {
-        case 'a': edit(null); return true;
+        case 'a': editRecipe(app, null); return true;
         case '/': searchInput?.focus(); return true;
-        case 'Enter': case 'e': {
+        case 'Enter': case 'o': case 'e': {
           const recipe = app.state.recipes.find((r) => r.id === row?.key);
-          if (recipe) edit(recipe);
+          if (recipe) (k === 'e' ? editRecipe : showRecipe)(app, recipe);
           return true;
         }
       }

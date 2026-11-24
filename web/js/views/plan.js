@@ -4,6 +4,7 @@ import { h, icon } from '../dom.js';
 import { api } from '../api.js';
 import { openModal, openMenu, toast } from '../ui/overlay.js';
 import { dayName, shortDate, sinceLabel } from '../dates.js';
+import { showRecipe } from '../recipe.js';
 
 const MEALS = [['lunch', 'Lunch'], ['dinner', 'Dinner']];
 
@@ -65,6 +66,16 @@ export function planView(app) {
         }
       },
     })), { title: `Copy ${dayName(date, app.state.today)} to…` });
+  }
+
+  /** A planned recipe opens to be read; an empty slot or a note opens the picker. */
+  function open(key) {
+    const { slot } = slotAt(key);
+    const recipe = slot?.recipe_id && app.state.recipes.find((r) => r.id === slot.recipe_id);
+    if (!recipe) return choose(key);
+    showRecipe(app, recipe, {
+      actions: [{ label: 'Change', run: (close) => { close(); choose(key); } }],
+    });
   }
 
   /** Search dialog: pick a recipe, or turn what was typed into a note. */
@@ -143,7 +154,7 @@ export function planView(app) {
 
   return {
     title: 'Plan',
-    hints: [[['j', 'k'], 'move'], [['Enter'], 'choose'], [['x'], 'clear'], [['s'], 'no list'], [['c'], 'copy day'], [['v'], 'validate']],
+    hints: [[['j', 'k'], 'move'], [['Enter'], 'open'], [['e'], 'change'], [['x'], 'clear'], [['s'], 'no list'], [['c'], 'copy day'], [['v'], 'validate']],
 
     actions() {
       const pending = app.state.plan?.pending || 0;
@@ -170,7 +181,7 @@ export function planView(app) {
           const row = h('div', {
             class: ['row', 'slot', !slot && 'empty', slot && !slot.recipe_id && 'note'],
             dataset: { key },
-            onclick: () => { app.select(key); choose(key); },
+            onclick: () => { app.select(key); open(key); },
           },
           h('span', { class: 'slot-meal' }, label),
           h('span', { class: 'slot-title' }, text),
@@ -194,7 +205,8 @@ export function planView(app) {
       if (k === 'v') { validate(); return true; }
       if (!row) return false;
       switch (k) {
-        case 'Enter': case 'e': case 'a': choose(row.key); return true;
+        case 'Enter': case 'o': open(row.key); return true;
+        case 'e': case 'a': choose(row.key); return true;
         case 's': skipList(row.key); return true;
         case 'x': case 'd': clearSlot(row.key); return true;
         case 'c': copyDay(slotAt(row.key).date, row.el); return true;

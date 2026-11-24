@@ -67,7 +67,10 @@ export function isTextInput(el) {
 /** Grows a textarea to fit its content. */
 export function autoGrow(textarea, minHeight = 0) {
   textarea.style.height = 'auto';
-  textarea.style.height = `${Math.max(minHeight, textarea.scrollHeight)}px`;
+  // scrollHeight leaves out the borders, which a border-box height includes:
+  // without them the last line hides behind a scroll bar.
+  const borders = textarea.offsetHeight - textarea.clientHeight;
+  textarea.style.height = `${Math.max(minHeight, textarea.scrollHeight + borders)}px`;
 }
 
 export function mapsUrl(location) {

@@ -336,9 +336,9 @@ class App {
           ])),
         h('div', {},
           ...section('Plan', [
-            [['Enter'], 'Choose a recipe or note'], [['x'], 'Clear the slot'], [['c'], 'Copy the day to…'], [['v'], 'Validate new recipes'],
+            [['Enter'], 'Open the recipe'], [['e'], 'Choose a recipe or note'], [['x'], 'Clear the slot'], [['c'], 'Copy the day to…'], [['v'], 'Validate new recipes'],
           ]),
-          ...section('Recipes', [[['a'], 'New recipe'], [['Enter', 'e'], 'Edit'], [['/'], 'Search']]),
+          ...section('Recipes', [[['a'], 'New recipe'], [['Enter'], 'Open'], [['e'], 'Edit'], [['/'], 'Search']]),
           ...section('Shopping', [
             [['Space'], 'Tick'], [['m'], 'Change aisle'], [['d'], 'Remove a hand-written item'],
             [['a'], 'Add an item'], [['A'], 'Edit aisles'], [['D'], 'Finish shopping'],

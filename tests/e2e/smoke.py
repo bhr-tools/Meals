@@ -46,7 +46,8 @@ def run(p):
     expect(page.locator(".day.today .day-name")).to_have_text("Today")
 
     # Recipes: ingredients only, notes kept apart.
-    add_recipe(page, "Pasta bolognese", ["pâtes", "oignon", "boeuf haché", "sauce tomate"], "Simmer 30 min")
+    add_recipe(page, "Pasta bolognese", ["pâtes", "oignon", "boeuf haché", "sauce tomate"],
+               "2 portions, 40 min.\n\n1. Brown the onion and the beef.\n2. Add the sauce, simmer 30 min.\n3. Cook the pasta.")
     add_recipe(page, "Chili con carne", ["riz", "oignons", "boeuf haché", "haricots rouges"])
     expect(page.locator(".row")).to_have_count(2)
     page.fill(".search-box input", "chili")
@@ -69,6 +70,27 @@ def run(p):
     page.get_by_role("button", name="Undo").click()
     expect(page.get_by_role("button", name="Validate 4 new")).to_be_visible()
     page.screenshot(path=f"{OUT}/plan.png")
+
+    # A planned recipe opens to be read: steps become a numbered list; e edits it,
+    # Change goes back to the picker.
+    page.locator(".slot").nth(1).click()
+    sheet = page.locator(".modal.recipe-view")
+    expect(sheet.locator(".modal-title")).to_have_text("Pasta bolognese")
+    expect(sheet.locator(".recipe-notes ol li")).to_have_count(3)
+    expect(sheet.locator(".recipe-ingredients li")).to_have_count(4)
+    page.wait_for_timeout(400)
+    page.screenshot(path=f"{OUT}/recipe-view.png")
+    page.keyboard.press("e")
+    expect(page.locator(".modal.recipe")).to_be_visible()
+    notes = page.locator(".modal.recipe textarea >> nth=1")
+    notes.fill(notes.input_value() + "\n4. Serve with parmesan.")
+    page.get_by_role("button", name="Save").click()
+    expect(page.locator(".modal.recipe")).to_have_count(0)
+    expect(sheet.locator(".recipe-notes ol li")).to_have_count(4)
+    sheet.get_by_role("button", name="Change").click()
+    expect(sheet).to_have_count(0)
+    expect(page.locator(".modal.picker")).to_be_visible()
+    page.keyboard.press("Escape")
     go(page, "3")
     expect(page.locator(".empty-list")).to_be_visible()
 
@@ -144,7 +166,7 @@ def run(p):
     page.wait_for_timeout(300)
     page.screenshot(path=f"{OUT}/phone-recipes.png")
     page.locator(".list .row").first.click()
-    expect(page.locator(".modal.recipe")).to_be_visible()
+    expect(page.locator(".modal.recipe-view")).to_be_visible()
     page.wait_for_timeout(400)
     page.screenshot(path=f"{OUT}/phone-recipe.png")
     page.keyboard.press("Escape")
