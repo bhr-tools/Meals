@@ -307,15 +307,11 @@ class App {
 
   /** The keys in force (kit/keys.js): moving and tabs, then the view's own. */
   keyTable() {
-    const at = TABS.findIndex((t) => t.id === this.state.view);
-    const step = (d) => () => this.go(TABS[(at + TABS.length + d) % TABS.length].id);
     return [
       { keys: ['j', 'ArrowDown'], label: 'Next row', group: 'Everywhere', run: () => this.moveCursor(1) },
       { keys: ['k', 'ArrowUp'], label: 'Previous row', group: 'Everywhere', run: () => this.moveCursor(-1) },
       { keys: ['gg'], label: 'First row', group: 'Everywhere', run: () => this.moveCursorTo(0) },
       { keys: ['G'], label: 'Last row', group: 'Everywhere', run: () => this.moveCursorTo(-1) },
-      { keys: ['h', 'ArrowLeft'], label: 'Previous tab', group: 'Everywhere', run: step(-1) },
-      { keys: ['l', 'ArrowRight'], label: 'Next tab', group: 'Everywhere', run: step(1) },
       { digit: true, helpKeys: ['1', '2', '3'], label: 'Plan / Recipes / Shopping', group: 'Everywhere', run: (n) => TABS[n - 1] && this.go(TABS[n - 1].id) },
       { keys: ['u'], label: 'Undo', group: 'Everywhere', run: () => this.undos.run() },
       { keys: ['Escape'], label: 'Close / leave a field', group: 'Everywhere' },

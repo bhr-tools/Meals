@@ -120,6 +120,20 @@ def run(p):
     expect(page.locator(".item", has_text="Simmer")).to_have_count(0)  # notes stay out
     group_titles = page.locator(".group-title").all_inner_texts()
     assert group_titles[0] == "Produce" and group_titles[-1] in ("Pantry", "Spices & sauces", "Other"), group_titles
+
+    # Aisles: dragged by the grip into the store's order; u-style undo from the toast.
+    page.get_by_role("button", name="Aisles").click()
+    names = lambda: page.locator(".aisle-name").all_inner_texts()
+    before = names()
+    grip = page.locator(".aisle-row").nth(1).locator(".drag-handle").bounding_box()
+    dest = page.locator(".aisle-row").nth(4).bounding_box()
+    page.mouse.move(grip["x"] + 8, grip["y"] + 8); page.mouse.down()
+    page.mouse.move(grip["x"] + 8, dest["y"] + dest["height"] - 4, steps=10); page.mouse.up()
+    expect(page.locator(".aisle-name").nth(4)).to_have_text(before[1])
+    page.locator(".toast button", has_text="Undo").click()
+    expect(page.locator(".aisle-name").nth(1)).to_have_text(before[1])
+    page.locator(".modal.aisles").get_by_role("button", name="Done").click()
+    expect(page.locator(".modal.aisles")).to_have_count(0)
     page.screenshot(path=f"{OUT}/shopping.png")
 
     # Tick, add by hand, change an aisle.

@@ -59,6 +59,7 @@
    Layout
    ========================================================================== */
 
+body { display: flex; flex-direction: column; height: 100dvh; overflow: hidden; }
 .app { display: flex; flex: 1; min-height: 0; }
 .main { flex: 1; min-width: 0; overflow-y: auto; overscroll-behavior: contain; }
 .page { width: 100%; max-width: 760px; margin: 0 auto; padding: 0 40px 80px; }
@@ -227,8 +228,8 @@ details.notes[open] > summary { margin-bottom: 6px; }
 .item .row-title { white-space: normal; }
 
 .aisle-row { display: flex; align-items: center; gap: 4px; min-height: 40px; padding: 2px 0; border-bottom: 1px solid var(--border); }
-.aisle-row .aisle-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.aisle-row .icon-button:disabled { opacity: 0.25; }
+.aisle-row .drag-handle { display: flex; align-items: center; justify-content: center; width: 28px; align-self: stretch; flex-shrink: 0; }
+.aisle-row .aisle-name { flex: 1; min-width: 0; align-self: stretch; overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
 .modal.aisles { width: min(440px, 100%); }
 
 .slot-remove { width: 28px; height: 28px; flex-shrink: 0; opacity: 0; }

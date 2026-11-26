@@ -4,6 +4,7 @@
 import { h, icon } from '../dom.js';
 import { api, engine } from '../api.js';
 import { openModal, openMenu, confirmDialog, promptDialog } from '/kit/js/overlay.js';
+import { sortable } from '/kit/js/drag.js';
 
 export function shoppingView(app) {
   let addInput = null;
@@ -78,6 +79,9 @@ export function shoppingView(app) {
     });
   }
 
+  // Aisles in store order: dragged by the grip on the left (at once on a
+  // phone, no long press), renamed with a tap on the name. A new order can
+  // be undone like the rest.
   async function manageAisles() {
     await app.run(() => app.loadAisles());
     const list = h('div', { class: 'aisle-list' });
@@ -86,33 +90,49 @@ export function shoppingView(app) {
       await app.refresh();
       draw();
     };
-    const move = async (i, delta) => {
-      const ids = app.state.aisles.map((a) => a.id);
-      [ids[i], ids[i + delta]] = [ids[i + delta], ids[i]];
-      if (await app.run(() => api.aisles.reorder(ids))) await reload();
+    const reorder = async (ids) => {
+      await api.aisles.reorder(ids);
+      await app.loadAisles();
+      draw();
+    };
+    sortable(list, {
+      handle: '.drag-handle',
+      label: (r) => r.querySelector('.aisle-name').textContent,
+      onMove: ({ key, index }) => {
+        const before = app.state.aisles.map((a) => a.id);
+        const ids = before.filter((id) => id !== key);
+        ids.splice(index, 0, key);
+        if (ids.join() === before.join()) return;
+        // Shown at once; the server follows.
+        const byId = new Map(app.state.aisles.map((a) => [a.id, a]));
+        app.state.aisles = ids.map((id) => byId.get(id));
+        draw();
+        app.undoable('Aisles reordered', () => reorder(ids), () => reorder(before));
+      },
+    });
+    const rename = async (a) => {
+      const name = await promptDialog('Rename aisle', { value: a.name });
+      if (name && name !== a.name && await app.run(() => api.aisles.rename(a.id, name))) await reload();
+    };
+    const remove = async (a) => {
+      if (!(await confirmDialog('Delete aisle', `Items in “${a.name}” go back to their automatic aisle.`, { okText: 'Delete' }))) return;
+      if (await app.run(() => api.aisles.remove(a.id))) await reload();
     };
     function draw() {
-      const aisles = app.state.aisles;
-      list.replaceChildren(...aisles.map((a, i) => h('div', { class: 'aisle-row' },
-        h('span', { class: 'aisle-name' }, a.name),
-        h('button', { type: 'button', class: 'icon-button', title: 'Move up', disabled: i === 0, onclick: () => move(i, -1) }, icon('arrowUp')),
-        h('button', { type: 'button', class: 'icon-button', title: 'Move down', disabled: i === aisles.length - 1, onclick: () => move(i, 1) }, icon('arrowDown')),
-        h('button', { type: 'button', class: 'icon-button', title: 'Rename', onclick: async () => {
-          const name = await promptDialog('Rename aisle', { value: a.name });
-          if (name && await app.run(() => api.aisles.rename(a.id, name))) await reload();
-        } }, icon('edit')),
-        a.key === 'other' ? h('span', { class: 'icon-button' }) : h('button', { type: 'button', class: 'icon-button', title: 'Delete', onclick: async () => {
-          if (!(await confirmDialog('Delete aisle', `Items in “${a.name}” go back to their automatic aisle.`, { okText: 'Delete' }))) return;
-          if (await app.run(() => api.aisles.remove(a.id))) await reload();
-        } }, icon('trash')))));
+      list.replaceChildren(...app.state.aisles.map((a) => h('div', { class: 'aisle-row', dataset: { key: a.id } },
+        h('span', { class: 'drag-handle', title: 'Drag to reorder' }, icon('grip')),
+        h('button', { type: 'button', class: 'aisle-name', title: 'Rename', onclick: () => rename(a) }, a.name),
+        a.key === 'other'
+          ? h('span', { class: 'icon-button' })
+          : h('button', { type: 'button', class: 'icon-button', title: 'Delete', onclick: () => remove(a) }, icon('trash')))));
     }
     draw();
     const modal = openModal({
       title: 'Aisles',
       className: 'aisles',
-      body: [h('p', { class: 'dialog-message' }, 'Order them like your store. Unknown ingredients go to Other; use “Change aisle” on an item to correct it once.'), list],
+      body: [h('p', { class: 'dialog-message' }, 'Drag them into the order of your store. Unknown ingredients go to Other; use “Change aisle” on an item to correct it once.'), list],
       footer: [
-        h('button', { type: 'button', class: 'button', onclick: () => modal.close() }, 'Close'),
+        h('button', { type: 'button', class: 'button', onclick: () => modal.close() }, 'Done'),
         h('button', { type: 'button', class: 'button primary', onclick: async () => {
           const name = await promptDialog('New aisle', { okText: 'Add' });
           if (name && await app.run(() => api.aisles.create(name))) await reload();
