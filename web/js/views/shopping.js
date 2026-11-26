@@ -2,8 +2,8 @@
 // says which recipes need it, and how many planned meals.
 
 import { h, icon } from '../dom.js';
-import { api } from '../api.js';
-import { openModal, openMenu, confirmDialog, promptDialog, toast } from '/kit/js/overlay.js';
+import { api, engine } from '../api.js';
+import { openModal, openMenu, confirmDialog, promptDialog } from '/kit/js/overlay.js';
 
 export function shoppingView(app) {
   let addInput = null;
@@ -29,11 +29,13 @@ export function shoppingView(app) {
     if (await app.run(() => api.shopping.addExtra(name))) await app.refresh();
   }
 
-  async function removeExtra(key) {
-    const found = find(key);
-    if (!found?.item.extra_id) return false;
-    if (await app.run(() => api.shopping.removeExtra(found.item.extra_id))) await app.refresh();
-    return true;
+  function removeExtra(key) {
+    const item = find(key)?.item;
+    if (!item?.extra_id) return;
+    app.undoable(`Removed ${item.name}`, () => api.shopping.removeExtra(item.extra_id), async () => {
+      await api.shopping.addExtra(item.name);
+      if (item.checked) await api.shopping.check(item.name, true);
+    });
   }
 
   async function changeAisle(key, anchor) {
@@ -63,10 +65,17 @@ export function shoppingView(app) {
       ? `${s.remaining} ${s.remaining === 1 ? 'item is' : 'items are'} not ticked yet. This empties the list; your plan stays as it is.`
       : 'This empties the list; your plan stays as it is.';
     if (!(await confirmDialog('Finish shopping?', message, { okText: 'Finish', danger: false }))) return;
-    if (await app.run(() => api.shopping.done())) {
-      await app.refresh();
-      toast('Shopping finished', { type: 'success' });
-    }
+    // What Done clears, to put it back on u: the listed meals, the items
+    // added by hand and the ticks.
+    const { slots, extras } = engine.state;
+    const listed = Object.values(slots).filter((x) => x.status === 'listed' && x.recipe_id);
+    const added = Object.values(extras).map((x) => x.name);
+    const ticked = items().filter((x) => x.item.checked).map((x) => x.item.name);
+    app.undoable('Shopping finished', () => api.shopping.done(), async () => {
+      for (const x of listed) await api.plan.setRecipe(x.date, x.meal, x.recipe_id, 'listed');
+      for (const name of added) await api.shopping.addExtra(name);
+      for (const name of ticked) await api.shopping.check(name, true);
+    });
   }
 
   async function manageAisles() {
@@ -176,19 +185,16 @@ export function shoppingView(app) {
       return { el, rows };
     },
 
-    key(k, row) {
-      switch (k) {
-        case 'a': addInput?.focus(); return true;
-        case 'A': manageAisles(); return true;
-        case 'D': finish(); return true;
-      }
-      if (!row) return false;
-      switch (k) {
-        case ' ': case 'Enter': case 'x': toggle(row.key); return true;
-        case 'm': changeAisle(row.key, row.el); return true;
-        case 'd': removeExtra(row.key); return true;
-      }
-      return false;
+    keys(row) {
+      const on = (fn) => () => row && fn(row);
+      return [
+        { keys: [' ', 'Enter', 'x'], label: 'Tick / untick', run: on((r) => toggle(r.key)) },
+        { keys: ['m'], label: 'Change aisle', run: on((r) => changeAisle(r.key, r.el)) },
+        { keys: ['d'], label: 'Remove a hand-written item', run: on((r) => removeExtra(r.key)) },
+        { keys: ['a'], label: 'Add an item', run: () => addInput?.focus() },
+        { keys: ['A'], label: 'Aisles', run: manageAisles },
+        { keys: ['D'], label: 'Finish shopping', run: finish },
+      ];
     },
   };
 }

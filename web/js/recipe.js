@@ -104,6 +104,7 @@ export function showRecipe(app, recipe, { actions = [] } = {}) {
 
   const modal = openModal({
     className: 'recipe-view',
+    back: 'Back', // it only shows the recipe; Edit is in the footer
     onClose: () => window.removeEventListener('keydown', onKey),
     autofocus: false,
     title: current.title,

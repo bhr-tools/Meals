@@ -60,17 +60,14 @@ export function recipesView(app) {
       return { el: h('div', {}, h('div', { class: 'search-box' }, searchInput), listEl), rows };
     },
 
-    key(k, row) {
-      switch (k) {
-        case 'a': editRecipe(app, null); return true;
-        case '/': searchInput?.focus(); return true;
-        case 'Enter': case 'o': case 'e': {
-          const recipe = app.state.recipes.find((r) => r.id === row?.key);
-          if (recipe) (k === 'e' ? editRecipe : showRecipe)(app, recipe);
-          return true;
-        }
-      }
-      return false;
+    keys(row) {
+      const recipe = () => app.state.recipes.find((r) => r.id === row?.key);
+      return [
+        { keys: ['a'], label: 'New recipe', run: () => editRecipe(app, null) },
+        { keys: ['/'], label: 'Search', run: () => searchInput?.focus() },
+        { keys: ['Enter', 'o'], label: 'Open', run: () => recipe() && showRecipe(app, recipe()) },
+        { keys: ['e'], label: 'Edit', run: () => recipe() && editRecipe(app, recipe()) },
+      ];
     },
   };
 }

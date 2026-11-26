@@ -25,33 +25,26 @@ export function planView(app) {
   }
 
   /** Puts a previous slot back (or empties it), exactly as it was. */
-  async function restore(date, meal, slot) {
-    const ok = await app.run(() => {
-      if (!slot) return api.plan.clear(date, meal);
-      return slot.recipe_id
-        ? api.plan.setRecipe(date, meal, slot.recipe_id, slot.status)
-        : api.plan.setText(date, meal, slot.text);
-    });
-    if (ok) await app.refresh();
+  function restore(date, meal, slot) {
+    if (!slot) return api.plan.clear(date, meal);
+    return slot.recipe_id
+      ? api.plan.setRecipe(date, meal, slot.recipe_id, slot.status)
+      : api.plan.setText(date, meal, slot.text);
   }
 
   /** Keeps a pending recipe out of the shopping list: it counts as already handled. */
-  async function skipList(key) {
+  function skipList(key) {
     const { date, meal, slot } = slotAt(key);
     if (slot?.status !== 'pending' || !slot.recipe_id) return;
-    if (await app.run(() => api.plan.setRecipe(date, meal, slot.recipe_id, 'done'))) {
-      await app.refresh();
-      toast('Not added to the shopping list', { action: { label: 'Undo', run: () => restore(date, meal, slot) } });
-    }
+    app.undoable('Not added to the shopping list',
+      () => api.plan.setRecipe(date, meal, slot.recipe_id, 'done'),
+      () => restore(date, meal, slot));
   }
 
-  async function clearSlot(key) {
+  function clearSlot(key) {
     const { date, meal, slot } = slotAt(key);
     if (!slot) return;
-    if (await app.run(() => api.plan.clear(date, meal))) {
-      await app.refresh();
-      toast('Meal removed', { action: { label: 'Undo', run: () => restore(date, meal, slot) } });
-    }
+    app.undoable('Meal removed', () => api.plan.clear(date, meal), () => restore(date, meal, slot));
   }
 
   function copyDay(date, anchor) {
@@ -119,13 +112,9 @@ export function planView(app) {
     async function pick(item) {
       modal.close();
       const before = slotAt(key).slot;
-      const ok = await app.run(() => item.recipe
-        ? api.plan.setRecipe(date, meal, item.recipe.id)
-        : api.plan.setText(date, meal, item.text));
-      if (ok) {
-        await app.refresh();
-        toast(`Added ${item.recipe ? item.recipe.title : 'note'}`, { action: { label: 'Undo', run: () => restore(date, meal, before) } });
-      }
+      app.undoable(`Added ${item.recipe ? item.recipe.title : 'note'}`,
+        () => (item.recipe ? api.plan.setRecipe(date, meal, item.recipe.id) : api.plan.setText(date, meal, item.text)),
+        () => restore(date, meal, before));
     }
 
     input.addEventListener('input', () => { active = 0; compute(); draw(); });
@@ -201,17 +190,16 @@ export function planView(app) {
       return { el, rows };
     },
 
-    key(k, row) {
-      if (k === 'v') { validate(); return true; }
-      if (!row) return false;
-      switch (k) {
-        case 'Enter': case 'o': open(row.key); return true;
-        case 'e': case 'a': choose(row.key); return true;
-        case 's': skipList(row.key); return true;
-        case 'x': case 'd': clearSlot(row.key); return true;
-        case 'c': copyDay(slotAt(row.key).date, row.el); return true;
-      }
-      return false;
+    keys(row) {
+      const on = (fn) => () => row && fn(row);
+      return [
+        { keys: ['Enter', 'o'], label: 'Open the recipe', run: on((r) => open(r.key)) },
+        { keys: ['e', 'a'], label: 'Choose a recipe or note', run: on((r) => choose(r.key)) },
+        { keys: ['x', 'd'], label: 'Clear the slot', run: on((r) => clearSlot(r.key)) },
+        { keys: ['s'], label: 'Keep out of the shopping list', run: on((r) => skipList(r.key)) },
+        { keys: ['c'], label: 'Copy the day to…', run: on((r) => copyDay(slotAt(r.key).date, r.el)) },
+        { keys: ['v'], label: 'Validate new recipes', run: validate },
+      ];
     },
   };
 }

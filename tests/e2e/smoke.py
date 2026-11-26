@@ -69,6 +69,20 @@ def run(p):
     expect(page.get_by_role("button", name="Validate 3 new")).to_be_visible()
     page.get_by_role("button", name="Undo").click()
     expect(page.get_by_role("button", name="Validate 4 new")).to_be_visible()
+    # x clears the slot under the cursor, u puts it back.
+    page.locator(".slot").nth(3).click()
+    page.keyboard.press("Escape")
+    page.keyboard.press("x")
+    expect(page.get_by_role("button", name="Validate 3 new")).to_be_visible()
+    page.keyboard.press("u")
+    expect(page.get_by_role("button", name="Validate 4 new")).to_be_visible()
+    # ? lists the keys of the view, from its table.
+    page.keyboard.press("?")
+    expect(page.locator(".modal.help")).to_contain_text("Clear the slot")
+    page.wait_for_timeout(300)
+    page.screenshot(path=f"{OUT}/help.png")
+    page.keyboard.press("Escape")
+    expect(page.locator(".modal.help")).to_have_count(0)
     page.screenshot(path=f"{OUT}/plan.png")
 
     # A planned recipe opens to be read: steps become a numbered list; e edits it,
@@ -134,6 +148,13 @@ def run(p):
     page.keyboard.press("Escape")
 
     # Finish: the list empties, the plan keeps its meals.
+    page.get_by_role("button", name="Done").click()
+    page.get_by_role("button", name="Finish").click()
+    expect(page.locator(".empty-list")).to_be_visible()
+    # u brings the list back as it was (ticks and hand-written items), then finish again.
+    page.keyboard.press("u")
+    expect(page.locator(".item.checked")).not_to_have_count(0)
+    expect(page.locator(".item", has_text="papier toilette")).to_have_count(1)
     page.get_by_role("button", name="Done").click()
     page.get_by_role("button", name="Finish").click()
     expect(page.locator(".empty-list")).to_be_visible()

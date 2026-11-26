@@ -3,7 +3,10 @@
 
 import { api, ApiError, engine, onUnauthorized } from './api.js';
 import { h, icon, clear, isTextInput } from './dom.js';
-import { openModal, topModal, toast, escapeTopLayer, isPopoverOpen, confirmDialog } from '/kit/js/overlay.js';
+import { openModal, topModal, toast, confirmDialog } from '/kit/js/overlay.js';
+import { initKeys } from '/kit/js/keys.js';
+import { createUndo } from '/kit/js/undo.js';
+import { tabBar } from '/kit/js/tabbar.js';
 import { createLock } from '/kit/js/lock.js';
 import { todayISO } from './dates.js';
 import { planView } from './views/plan.js';
@@ -13,9 +16,9 @@ import { shoppingView } from './views/shopping.js';
 const $ = (id) => document.getElementById(id);
 
 const TABS = [
-  { id: 'plan', label: 'Plan', icon: 'plan', keys: ['1', '&'] },
-  { id: 'recipes', label: 'Recipes', icon: 'recipes', keys: ['2', 'é'] },
-  { id: 'shopping', label: 'Shopping', icon: 'shopping', keys: ['3', '"'] },
+  { id: 'plan', label: 'Plan', icon: 'plan' },
+  { id: 'recipes', label: 'Recipes', icon: 'recipes' },
+  { id: 'shopping', label: 'Shopping', icon: 'shopping' },
 ];
 
 class App {
@@ -32,7 +35,7 @@ class App {
     };
     this.rows = []; // { key, el } of the current view, in cursor order
     this.cursor = 0;
-    this.pendingG = 0;
+    this.undos = createUndo({ toast });
     this.views = { plan: planView(this), recipes: recipesView(this), shopping: shoppingView(this) };
     this.lockScreen = createLock({
       appName: 'Meals',
@@ -50,7 +53,7 @@ class App {
     $('brand').append(icon('brand'), 'Meals');
     this.buildNav();
     onUnauthorized(() => this.showLogin());
-    window.addEventListener('keydown', (e) => this.onKey(e));
+    if (!this.keys) this.keys = initKeys({ table: () => this.keyTable(), helpTitle: 'Keyboard shortcuts' });
     window.addEventListener('hashchange', () => {
       const id = location.hash.slice(1);
       if (TABS.some((t) => t.id === id) && id !== this.state.view) this.go(id);
@@ -164,6 +167,28 @@ class App {
     }
   }
 
+  /**
+   * Runs an action that u can undo: fn does it, undoFn puts things back.
+   * The entry is pushed first (kit/undo.js), and dropped if fn fails.
+   * Resolves to true when fn succeeded.
+   */
+  async undoable(label, fn, undoFn) {
+    const entry = this.undos.push({
+      label,
+      undo: async () => {
+        if ((await this.run(async () => { await undoFn(); return true; })) === undefined) return false;
+        await this.refresh();
+        return true;
+      },
+    });
+    if ((await this.run(async () => { await fn(); return true; })) === undefined) {
+      entry.cancel();
+      return false;
+    }
+    await this.refresh();
+    return true;
+  }
+
   // -------------------------------------------------------------------------
   // Rendering
   // -------------------------------------------------------------------------
@@ -183,14 +208,11 @@ class App {
 
   buildNav() {
     const nav = clear($('nav'));
-    const tabbar = clear($('tabbar'));
     for (const tab of TABS) {
       nav.append(h('button', { type: 'button', class: 'nav-item', dataset: { tab: tab.id }, onclick: () => this.go(tab.id) },
         icon(tab.icon), h('span', { class: 'nav-label' }, tab.label), h('span', { class: 'nav-count' })));
-      tabbar.append(h('button', { type: 'button', class: 'tab', dataset: { tab: tab.id }, onclick: () => this.go(tab.id) },
-        h('span', { class: 'tab-icon' }, icon(tab.icon), h('span', { class: 'badge' })),
-        h('span', { class: 'tab-label' }, tab.label)));
     }
+    this.tabs = tabBar($('tabbar'), TABS, { onSelect: (id) => this.go(id) });
   }
 
   badges() {
@@ -200,14 +222,16 @@ class App {
 
   renderNav() {
     const counts = this.badges();
+    this.tabs.setActive(this.state.view);
     for (const tab of TABS) {
       const n = counts[tab.id];
-      for (const el of document.querySelectorAll(`[data-tab="${tab.id}"]`)) {
-        el.classList.toggle('active', tab.id === this.state.view);
-        const badge = el.querySelector('.nav-count, .badge');
-        badge.textContent = n ? String(n) : '';
-        badge.classList.toggle('alert', tab.id === 'plan' && n > 0);
-      }
+      const alert = tab.id === 'plan' && n > 0;
+      this.tabs.setBadge(tab.id, n, { alert });
+      const item = $('nav').querySelector(`[data-tab="${tab.id}"]`);
+      item.classList.toggle('active', tab.id === this.state.view);
+      const count = item.querySelector('.nav-count');
+      count.textContent = n ? String(n) : '';
+      count.classList.toggle('alert', alert);
     }
   }
 
@@ -281,76 +305,22 @@ class App {
   // Keys
   // -------------------------------------------------------------------------
 
-  onKey(e) {
-    if (e.defaultPrevented || e.isComposing) return;
-    if (e.key === 'Escape') {
-      if (escapeTopLayer()) {
-        e.preventDefault();
-        return;
-      }
-      if (isTextInput(document.activeElement)) {
-        e.preventDefault();
-        document.activeElement.blur();
-        return;
-      }
-    }
-    if (topModal() || isPopoverOpen() || isTextInput(e.target)) return;
-    if (e.ctrlKey || e.metaKey || e.altKey) return;
-    if (this.normalKey(e.key)) e.preventDefault();
-  }
-
-  normalKey(key) {
-    if (key === 'g') {
-      if (Date.now() - this.pendingG < 1000) {
-        this.pendingG = 0;
-        this.moveCursorTo(0);
-      } else {
-        this.pendingG = Date.now();
-      }
-      return true;
-    }
-    this.pendingG = 0;
-
-    const tab = TABS.find((t) => t.keys.includes(key));
-    if (tab) {
-      this.go(tab.id);
-      return true;
-    }
+  /** The keys in force (kit/keys.js): moving and tabs, then the view's own. */
+  keyTable() {
     const at = TABS.findIndex((t) => t.id === this.state.view);
-    switch (key) {
-      case 'j': case 'ArrowDown': this.moveCursor(1); return true;
-      case 'k': case 'ArrowUp': this.moveCursor(-1); return true;
-      case 'G': this.moveCursorTo(-1); return true;
-      case 'h': case 'ArrowLeft': this.go(TABS[(at + TABS.length - 1) % TABS.length].id); return true;
-      case 'l': case 'ArrowRight': this.go(TABS[(at + 1) % TABS.length].id); return true;
-      case '?': this.openHelp(); return true;
-    }
-    return this.view.key(key, this.cursorRow());
-  }
-
-  openHelp() {
-    const row = (keys, label) => h('div', { class: 'help-row' }, h('span', {}, label),
-      h('span', { class: 'help-keys' }, keys.map((k) => h('kbd', {}, k))));
-    const section = (title, rows) => [h('h3', {}, title), ...rows.map(([k, l]) => row(k, l))];
-    openModal({
-      title: 'Keyboard shortcuts',
-      className: 'help',
-      body: h('div', { class: 'help-grid' },
-        h('div', {},
-          ...section('Everywhere', [
-            [['j', 'k'], 'Move'], [['gg', 'G'], 'First / last'], [['h', 'l'], 'Previous / next tab'],
-            [['1', '2', '3'], 'Plan / Recipes / Shopping'], [['Esc'], 'Close / leave a field'], [['?'], 'This help'],
-          ])),
-        h('div', {},
-          ...section('Plan', [
-            [['Enter'], 'Open the recipe'], [['e'], 'Choose a recipe or note'], [['x'], 'Clear the slot'], [['c'], 'Copy the day to…'], [['v'], 'Validate new recipes'],
-          ]),
-          ...section('Recipes', [[['a'], 'New recipe'], [['Enter'], 'Open'], [['e'], 'Edit'], [['/'], 'Search']]),
-          ...section('Shopping', [
-            [['Space'], 'Tick'], [['m'], 'Change aisle'], [['d'], 'Remove a hand-written item'],
-            [['a'], 'Add an item'], [['A'], 'Edit aisles'], [['D'], 'Finish shopping'],
-          ]))),
-    });
+    const step = (d) => () => this.go(TABS[(at + TABS.length + d) % TABS.length].id);
+    return [
+      { keys: ['j', 'ArrowDown'], label: 'Next row', group: 'Everywhere', run: () => this.moveCursor(1) },
+      { keys: ['k', 'ArrowUp'], label: 'Previous row', group: 'Everywhere', run: () => this.moveCursor(-1) },
+      { keys: ['gg'], label: 'First row', group: 'Everywhere', run: () => this.moveCursorTo(0) },
+      { keys: ['G'], label: 'Last row', group: 'Everywhere', run: () => this.moveCursorTo(-1) },
+      { keys: ['h', 'ArrowLeft'], label: 'Previous tab', group: 'Everywhere', run: step(-1) },
+      { keys: ['l', 'ArrowRight'], label: 'Next tab', group: 'Everywhere', run: step(1) },
+      { digit: true, helpKeys: ['1', '2', '3'], label: 'Plan / Recipes / Shopping', group: 'Everywhere', run: (n) => TABS[n - 1] && this.go(TABS[n - 1].id) },
+      { keys: ['u'], label: 'Undo', group: 'Everywhere', run: () => this.undos.run() },
+      { keys: ['Escape'], label: 'Close / leave a field', group: 'Everywhere' },
+      ...this.view.keys(this.cursorRow()).map((b) => ({ group: this.view.title, ...b })),
+    ];
   }
 
   // -------------------------------------------------------------------------
