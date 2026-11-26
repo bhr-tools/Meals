@@ -10,8 +10,12 @@ import (
 )
 
 type syncAnswer struct {
-	Results  []syncResult `json:"results"`
-	ETag     string       `json:"etag"`
+	Results []struct {
+		ID     string `json:"id"`
+		Status string `json:"status"`
+		Error  string `json:"error"`
+	} `json:"results"`
+	ETag     string `json:"etag"`
 	Snapshot struct {
 		Recipes []struct {
 			ID    string `json:"id"`

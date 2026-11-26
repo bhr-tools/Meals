@@ -2,13 +2,9 @@ package db
 
 import (
 	"database/sql"
-	"time"
 
-	"github.com/ben/meals/internal/aisle"
+	"github.com/bhr-tools/meals/internal/aisle"
 )
-
-// syncOpsKept is how long applied changes are remembered.
-const syncOpsKept = 30 * 24 * time.Hour
 
 // Snapshot is all the data, as stored, for clients that work offline.
 type Snapshot struct {
@@ -185,26 +181,4 @@ func (s *Store) Snapshot() (*Snapshot, error) {
 		snap.Dictionary = append(snap.Dictionary, DictEntry{Words: e.Words, Key: e.Key})
 	}
 	return snap, nil
-}
-
-// SyncOpStatus returns the recorded outcome of a change already applied.
-func (s *Store) SyncOpStatus(id string) (status, msg string, found bool, err error) {
-	err = s.db.QueryRow(`SELECT status, error FROM sync_ops WHERE id = ?`, id).Scan(&status, &msg)
-	if err == sql.ErrNoRows {
-		return "", "", false, nil
-	}
-	return status, msg, err == nil, err
-}
-
-// RecordSyncOp remembers the outcome of a change.
-func (s *Store) RecordSyncOp(id, status, msg string) error {
-	_, err := s.db.Exec(`INSERT OR IGNORE INTO sync_ops (id, status, error, applied_at) VALUES (?, ?, ?, ?)`,
-		id, status, msg, time.Now().UTC())
-	return err
-}
-
-// PruneSyncOps forgets changes applied long ago.
-func (s *Store) PruneSyncOps() error {
-	_, err := s.db.Exec(`DELETE FROM sync_ops WHERE applied_at < ?`, time.Now().UTC().Add(-syncOpsKept))
-	return err
 }

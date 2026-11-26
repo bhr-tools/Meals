@@ -2,7 +2,7 @@
 // falls back to memory storage).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { SyncEngine } from '../../web/js/sync/engine.js';
+import { SyncEngine } from '/kit/js/sync/engine.js';
 import { EMPTY, fromSnapshot } from '../../web/js/sync/state.js';
 import { reduce } from '../../web/js/sync/reduce.js';
 

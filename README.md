@@ -63,6 +63,6 @@ Data lives in `/var/lib/meals-<instance>/meals.db`.
 
 ```sh
 go test ./...
-node --test tests/js/*.test.mjs   # offline state, reducer and sync engine
+node --import ./vendor/github.com/bhr-tools/kit/web/node/register.mjs --test "tests/js/*.test.mjs"   # offline state, reducer, kit sync engine
 tests/e2e/run.sh   # Playwright from nixpkgs, screenshots in tests/e2e/out
 ```

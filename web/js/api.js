@@ -1,8 +1,8 @@
 // HTTP client for the Meals API. Every call returns the decoded JSON or
 // throws an ApiError whose message can be shown to the user.
 
-import { ApiError } from './errors.js';
-import { SyncEngine, newId } from './sync/engine.js';
+import { ApiError } from '/kit/js/errors.js';
+import { SyncEngine, newId } from '/kit/js/sync/engine.js';
 import { EMPTY, fromSnapshot, plan, listRecipes, shopping, listAisles } from './sync/state.js';
 import { reduce } from './sync/reduce.js';
 

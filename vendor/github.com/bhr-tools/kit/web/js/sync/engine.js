@@ -1,5 +1,3 @@
-// Same file in GetDone and Meals (web/js/sync/): keep both copies identical.
-//
 // Offline sync engine. It keeps the last server snapshot and the queue of
 // changes the server has not acknowledged yet, both in IndexedDB. The local
 // state is the snapshot with the queued changes replayed on top: the server

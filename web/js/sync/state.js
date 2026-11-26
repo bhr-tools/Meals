@@ -11,7 +11,7 @@
 //   dictionary: [{ words, key }]                most specific first
 // Every read function returns new objects: callers may modify them freely.
 
-import { ApiError } from '../errors.js';
+import { ApiError } from '/kit/js/errors.js';
 import { classify } from '../aisle.js';
 
 export const EMPTY = { recipes: [], slots: [], aisles: [], overrides: {}, checked: [], extras: [], dictionary: [] };

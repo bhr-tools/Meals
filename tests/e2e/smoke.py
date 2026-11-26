@@ -155,6 +155,7 @@ def run(p):
     page.locator(".tab", has_text="Plan").click()
     page.locator(".slot").nth(2).click()
     expect(page.locator(".modal.picker")).to_be_visible()
+    page.wait_for_timeout(400)  # the page slides in from the right
     box = page.locator(".modal.picker").bounding_box()
     assert box["width"] >= 389 and box["x"] == 0, box
     page.wait_for_timeout(400)

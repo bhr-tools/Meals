@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"strings"
 
-	"github.com/ben/meals/internal/aisle"
+	"github.com/bhr-tools/meals/internal/aisle"
 )
 
 const (

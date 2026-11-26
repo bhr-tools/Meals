@@ -2,7 +2,7 @@
 // methods in internal/db). The server stays the authority: when this code
 // and the server disagree on a detail, the next snapshot corrects it.
 
-import { ApiError } from '../errors.js';
+import { ApiError } from '/kit/js/errors.js';
 import { normalize } from '../aisle.js';
 import { MEALS, slotKey, validDate, recipeOut } from './state.js';
 

@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ben/meals/internal/db"
+	"github.com/bhr-tools/meals/internal/db"
 )
 
 func newServer(t *testing.T, noAuth bool) http.Handler {
@@ -18,7 +18,11 @@ func newServer(t *testing.T, noAuth bool) http.Handler {
 		t.Fatal(err)
 	}
 	t.Cleanup(func() { store.Close() })
-	return New(store, noAuth).Handler()
+	a, err := New(store, noAuth)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return a.Handler()
 }
 
 func call(t *testing.T, h http.Handler, method, path, body string, headers ...string) *httptest.ResponseRecorder {

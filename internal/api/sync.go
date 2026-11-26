@@ -1,143 +1,27 @@
 package api
 
-// Offline sync (see the offline plan): GET /api/sync returns all the data;
-// POST /api/sync applies changes made offline, in order, then returns the new
-// data. Each change has a client-chosen UUID, recorded once applied, so a
-// batch sent twice (lost answer, retry) is applied once.
+// Offline sync: the kit (kit/offline) serves /api/sync and applies each change
+// once; this file gives it Meals' snapshot and how to apply one change.
 
 import (
-	"crypto/sha256"
-	"encoding/hex"
-	"encoding/json"
-	"errors"
 	"fmt"
-	"log"
-	"net/http"
 
-	"github.com/google/uuid"
-
-	"github.com/ben/meals/internal/db"
+	"github.com/bhr-tools/kit/offline"
+	"github.com/bhr-tools/meals/internal/db"
 )
 
-const maxSyncOps = 500
-
-type syncOp struct {
-	ID   string          `json:"id"`
-	Type string          `json:"type"`
-	Args json.RawMessage `json:"args"`
-}
-
-type syncResult struct {
-	ID     string `json:"id"`
-	Status string `json:"status"` // ok | not_found | invalid
-	Error  string `json:"error,omitempty"`
-}
-
-type syncResponse struct {
-	Results  []syncResult    `json:"results,omitempty"`
-	ETag     string          `json:"etag"`
-	Snapshot json.RawMessage `json:"snapshot"`
-}
-
-// snapshot returns the encoded snapshot and its ETag.
-func (a *API) snapshot() (json.RawMessage, string, error) {
-	snap, err := a.store.Snapshot()
-	if err != nil {
-		return nil, "", err
-	}
-	body, err := json.Marshal(snap)
-	if err != nil {
-		return nil, "", err
-	}
-	sum := sha256.Sum256(body)
-	return body, `"` + hex.EncodeToString(sum[:16]) + `"`, nil
-}
-
-func (a *API) getSync(w http.ResponseWriter, r *http.Request) {
-	body, etag, err := a.snapshot()
-	if err != nil {
-		fail(w, r, err)
-		return
-	}
-	w.Header().Set("ETag", etag)
-	if r.Header.Get("If-None-Match") == etag {
-		w.Header().Set("Cache-Control", "no-store")
-		w.WriteHeader(http.StatusNotModified)
-		return
-	}
-	writeJSON(w, http.StatusOK, syncResponse{ETag: etag, Snapshot: body})
-}
-
-func (a *API) postSync(w http.ResponseWriter, r *http.Request) {
-	var req struct {
-		Ops []syncOp `json:"ops"`
-	}
-	if !decode(w, r, &req) {
-		return
-	}
-	if len(req.Ops) > maxSyncOps {
-		writeError(w, http.StatusBadRequest, fmt.Sprintf("Too many changes at once (max %d)", maxSyncOps))
-		return
-	}
-	results := make([]syncResult, 0, len(req.Ops))
-	for _, op := range req.Ops {
-		res, err := a.applySyncOp(op)
-		if err != nil {
-			fail(w, r, err) // the client sends the batch again; applied changes are skipped
-			return
-		}
-		results = append(results, res)
-	}
-	if err := a.store.PruneSyncOps(); err != nil {
-		log.Printf("prune sync ops: %v", err)
-	}
-	body, etag, err := a.snapshot()
-	if err != nil {
-		fail(w, r, err)
-		return
-	}
-	w.Header().Set("ETag", etag)
-	writeJSON(w, http.StatusOK, syncResponse{Results: results, ETag: etag, Snapshot: body})
-}
-
-// applySyncOp applies one change once. Only internal errors are returned.
-func (a *API) applySyncOp(op syncOp) (syncResult, error) {
-	res := syncResult{ID: op.ID, Status: "ok"}
-	if _, err := uuid.Parse(op.ID); err != nil {
-		res.Status, res.Error = "invalid", "Invalid operation id"
-		return res, nil
-	}
-	status, msg, found, err := a.store.SyncOpStatus(op.ID)
-	if err != nil {
-		return res, err
-	}
-	if found {
-		res.Status, res.Error = status, msg
-		return res, nil
-	}
-	var invalidErr *db.ValidationError
-	switch err := a.dispatch(op); {
-	case err == nil:
-	case errors.Is(err, db.ErrNotFound):
-		res.Status = "not_found"
-	case errors.As(err, &invalidErr):
-		res.Status, res.Error = "invalid", invalidErr.Msg
-	default:
-		return res, err
-	}
-	return res, a.store.RecordSyncOp(op.ID, res.Status, res.Error)
+// snapshot is all the data.
+func (a *API) snapshot() (any, error) {
+	return a.store.Snapshot()
 }
 
 // args decodes the arguments of a change; a malformed change is invalid.
-func args(op syncOp, dst any) error {
-	if err := json.Unmarshal(op.Args, dst); err != nil {
-		return &db.ValidationError{Msg: "Invalid arguments: " + err.Error()}
-	}
-	return nil
+func args(op offline.Op, dst any) error {
+	return op.Decode(dst)
 }
 
 // dispatch applies one change with the matching store method.
-func (a *API) dispatch(op syncOp) error {
+func (a *API) dispatch(op offline.Op) error {
 	s := a.store
 	switch op.Type {
 	case "slot.set_recipe":

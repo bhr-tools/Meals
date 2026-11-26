@@ -2,7 +2,7 @@
 
 import { h, autoGrow, isTextInput } from './dom.js';
 import { api } from './api.js';
-import { openModal, topModal, isPopoverOpen, confirmDialog, toast } from './ui/overlay.js';
+import { openModal, topModal, isPopoverOpen, confirmDialog, toast } from '/kit/js/overlay.js';
 import { sinceLabel } from './dates.js';
 
 const URL_RE = /https?:\/\/[^\s<>"]+[^\s<>".,;:!?)\]]/g;

@@ -1,13 +1,24 @@
 package main
 
 import (
+	"net/http"
 	"net/http/httptest"
 	"path/filepath"
 	"strings"
 	"testing"
 
-	"github.com/ben/meals/internal/db"
+	"github.com/bhr-tools/meals/internal/api"
+	"github.com/bhr-tools/meals/internal/db"
 )
+
+func handler(t *testing.T, store *db.Store) http.Handler {
+	t.Helper()
+	a, err := api.New(store, true)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return newHandler(store, a)
+}
 
 func TestServiceWorker(t *testing.T) {
 	store, err := db.Open(filepath.Join(t.TempDir(), "sw.db"))
@@ -15,7 +26,7 @@ func TestServiceWorker(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer store.Close()
-	h := newHandler(store, true)
+	h := handler(t, store)
 
 	rec := httptest.NewRecorder()
 	h.ServeHTTP(rec, httptest.NewRequest("GET", "/sw.js", nil))
@@ -29,7 +40,7 @@ func TestServiceWorker(t *testing.T) {
 	if !strings.HasPrefix(body, `const VERSION = "`) {
 		t.Errorf("body starts with %.40q", body)
 	}
-	for _, want := range []string{`"/"`, `"/js/app.js"`, `"/js/sync/engine.js"`, "self.addEventListener"} {
+	for _, want := range []string{`"/"`, `"/js/app.js"`, `"/kit/js/overlay.js"`, "self.addEventListener"} {
 		if !strings.Contains(body, want) {
 			t.Errorf("body lacks %s", want)
 		}

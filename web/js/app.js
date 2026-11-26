@@ -3,7 +3,8 @@
 
 import { api, ApiError, engine, onUnauthorized } from './api.js';
 import { h, icon, clear, isTextInput } from './dom.js';
-import { openModal, openMenu, closeAllModals, topModal, toast, escapeTopLayer, isPopoverOpen, confirmDialog } from './ui/overlay.js';
+import { openModal, topModal, toast, escapeTopLayer, isPopoverOpen, confirmDialog } from '/kit/js/overlay.js';
+import { createLock } from '/kit/js/lock.js';
 import { todayISO } from './dates.js';
 import { planView } from './views/plan.js';
 import { recipesView } from './views/recipes.js';
@@ -33,6 +34,12 @@ class App {
     this.cursor = 0;
     this.pendingG = 0;
     this.views = { plan: planView(this), recipes: recipesView(this), shopping: shoppingView(this) };
+    this.lockScreen = createLock({
+      appName: 'Meals',
+      beforeLock: () => this.confirmLock(),
+      afterLock: () => engine.reset(),
+      onUnlocked: () => this.afterLogin(),
+    });
   }
 
   // -------------------------------------------------------------------------
@@ -350,80 +357,14 @@ class App {
   // Authentication
   // -------------------------------------------------------------------------
 
-  passwordForm({ title, intro, fields, submitLabel, dismissible, onSubmit }) {
-    const error = h('div', { class: 'form-error', hidden: true });
-    const inputs = fields.map((f) => h('input', {
-      type: 'password', class: 'input', placeholder: f.placeholder, autocomplete: f.autocomplete, attrs: { 'aria-label': f.label },
-    }));
-    const submit = h('button', { type: 'submit', class: 'button primary wide' }, submitLabel);
-    const form = h('form', { class: 'auth-form' },
-      intro ? h('p', { class: 'dialog-message' }, intro) : null,
-      error,
-      fields.map((f, i) => h('label', { class: 'field' }, h('span', { class: 'field-label' }, f.label), inputs[i])),
-      submit);
-    let modal;
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      error.hidden = true;
-      submit.disabled = true;
-      try {
-        const message = await onSubmit(inputs.map((i) => i.value));
-        if (message) {
-          error.textContent = message;
-          error.hidden = false;
-        } else {
-          modal.close();
-        }
-      } catch (err) {
-        error.textContent = err.message;
-        error.hidden = false;
-      } finally {
-        submit.disabled = false;
-      }
-    });
-    modal = openModal({ title, body: form, className: 'dialog auth', dismissible });
-    return modal;
-  }
-
   showSetup() {
-    closeAllModals({ keepUndismissible: false });
     this.state.auth.authenticated = false;
-    this.passwordForm({
-      title: 'Welcome to Meals',
-      intro: 'Choose a master password to protect this instance. You can change it later.',
-      fields: [
-        { label: 'Master password', placeholder: 'At least 4 characters', autocomplete: 'new-password' },
-        { label: 'Confirm password', placeholder: 'Repeat the password', autocomplete: 'new-password' },
-      ],
-      submitLabel: 'Set password and continue',
-      dismissible: false,
-      onSubmit: async ([password, confirm]) => {
-        if (password.length < 4) return 'The password must be at least 4 characters long.';
-        if (password !== confirm) return 'The passwords do not match.';
-        await api.auth.setup(password);
-        this.afterLogin();
-        return null;
-      },
-    });
+    this.lockScreen.showSetup();
   }
 
   showLogin() {
-    if (topModal()?.el.classList.contains('auth')) return;
-    closeAllModals({ keepUndismissible: false });
     this.state.auth.authenticated = false;
-    this.passwordForm({
-      title: 'Meals is locked',
-      intro: 'Enter your master password to unlock.',
-      fields: [{ label: 'Password', placeholder: 'Master password', autocomplete: 'current-password' }],
-      submitLabel: 'Unlock',
-      dismissible: false,
-      onSubmit: async ([password]) => {
-        if (!password) return 'Enter your password.';
-        await api.auth.login(password);
-        this.afterLogin();
-        return null;
-      },
-    });
+    this.lockScreen.showLogin();
   }
 
   async afterLogin({ sync = true } = {}) {
@@ -436,36 +377,12 @@ class App {
     await this.refresh();
   }
 
-  changePassword() {
-    this.passwordForm({
-      title: 'Change password',
-      fields: [
-        { label: 'Current password', placeholder: 'Current master password', autocomplete: 'current-password' },
-        { label: 'New password', placeholder: 'At least 4 characters', autocomplete: 'new-password' },
-        { label: 'Confirm new password', placeholder: 'Repeat the new password', autocomplete: 'new-password' },
-      ],
-      submitLabel: 'Update password',
-      dismissible: true,
-      onSubmit: async ([current, next, confirm]) => {
-        if (next.length < 4) return 'The new password must be at least 4 characters long.';
-        if (next !== confirm) return 'The new passwords do not match.';
-        await api.auth.changePassword(current, next);
-        toast('Password updated. Other devices were signed out.', { type: 'success' });
-        return null;
-      },
-    });
-  }
-
-  async lock() {
+  /** Before locking: sends what is pending, or asks before losing it. */
+  async confirmLock() {
     if (engine.pending) await engine.sync();
-    if (engine.pending) {
-      const ok = await confirmDialog('Unsynced changes',
-        `${engine.pending} change(s) have not reached the server yet and will be lost. Lock anyway?`, { okText: 'Lock' });
-      if (!ok) return;
-    }
-    await this.run(() => api.auth.logout());
-    await engine.reset();
-    this.showLogin();
+    if (!engine.pending) return true;
+    return confirmDialog('Unsynced changes',
+      `${engine.pending} change(s) have not reached the server yet and will be lost. Lock anyway?`, { okText: 'Lock' });
   }
 
   showFatal(err) {
@@ -482,8 +399,5 @@ class App {
 const app = new App();
 const lockButton = $('auth-menu');
 lockButton.append(icon('lock'));
-lockButton.addEventListener('click', () => openMenu(lockButton, [
-  { label: 'Change password', icon: 'lock', run: () => app.changePassword() },
-  { label: 'Lock', icon: 'lock', run: () => app.lock() },
-], { title: 'Security' }));
+lockButton.addEventListener('click', () => app.lockScreen.menu(lockButton));
 app.boot();

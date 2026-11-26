@@ -5,7 +5,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/ben/meals/internal/aisle"
+	"github.com/bhr-tools/meals/internal/aisle"
 )
 
 // RecipeRef says that a recipe needs an ingredient, once per planned meal.

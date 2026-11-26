@@ -3,7 +3,7 @@
 
 import { h, icon } from '../dom.js';
 import { api } from '../api.js';
-import { openModal, openMenu, confirmDialog, promptDialog, toast } from '../ui/overlay.js';
+import { openModal, openMenu, confirmDialog, promptDialog, toast } from '/kit/js/overlay.js';
 
 export function shoppingView(app) {
   let addInput = null;

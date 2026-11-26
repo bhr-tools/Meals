@@ -1,5 +1,3 @@
-// Same file in GetDone and Meals (web/js/sync/): keep both copies identical.
-//
 // Minimal IndexedDB storage for the sync engine: a key-value store "meta"
 // (snapshot, etag) and an ordered queue "ops". When IndexedDB is unavailable
 // (private window, Node tests), everything is kept in memory instead, so the

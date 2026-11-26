@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/ben/meals/internal/db"
+	"github.com/bhr-tools/meals/internal/db"
 	"net/http"
 	"time"
 )

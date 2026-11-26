@@ -2,7 +2,7 @@
 
 import { h, icon } from '../dom.js';
 import { api } from '../api.js';
-import { openModal, openMenu, toast } from '../ui/overlay.js';
+import { openModal, openMenu, toast } from '/kit/js/overlay.js';
 import { dayName, shortDate, sinceLabel } from '../dates.js';
 import { showRecipe } from '../recipe.js';
 
