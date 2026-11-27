@@ -3,7 +3,7 @@ module github.com/bhr-tools/meals
 go 1.26.0
 
 require (
-	github.com/bhr-tools/kit v0.1.8
+	github.com/bhr-tools/kit v0.1.16
 	github.com/google/uuid v1.6.0
 )
 
